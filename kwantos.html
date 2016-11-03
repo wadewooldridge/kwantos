@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Kwantos - the "Are there more...?" Game</title>
+
+    <!-- Angular Material style sheet -->
+    <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.css">
+
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <script src="https://code.jquery.com/jquery.min.js"></script>
+
+    <!-- Angular Material requires Angular.js Libraries -->
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-animate.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-aria.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-messages.min.js"></script>
+
+    <!-- Angular Material Library -->
+    <script src="http://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.js"></script>
+
+    <!-- JavaScript for this program -->
+    <script src="kwantos.js"></script>
+</head>
+<body ng-app="KwantosApp" ng-controller="KwantosController as kc">
+<header>
+    <md-toolbar>
+        <div class="md-toolbar-tools">
+            <h1>Kwantos</h1>
+        </div>
+    </md-toolbar>
+</header>
+<main>
+    <div id="players-div">
+        <div id="player-1-div">
+            Player 1
+            Score
+        </div>
+        <div id="player-2-div">
+            Player 2
+            Score
+        </div>
+        <div id="player-3-div">
+            Player 3
+            Score
+        </div>
+        <div id="player-4-div">
+            Player 4
+            Score
+        </div>
+    </div>
+</main>
+<footer>
+    <div>
+        Help
+    </div>
+    <div>
+        Restart
+    </div>
+    <div>
+        High Scores
+    </div>
+</footer>
+</body>
+</html>
