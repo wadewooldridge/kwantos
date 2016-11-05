@@ -1,0 +1,48 @@
+/* Stylings for overall application. */
+
+/* Stylings for the header. */
+.material-icons {
+    vertical-align: middle;
+}
+
+/* Stylings for the player divs. */
+#players-div {
+    width: 100%;
+    display: table;
+}
+
+.player-div {
+    display: table-cell;
+    box-sizing: border-box;
+    border: 1px solid black;
+    text-align: center;
+    font-size: 125%;
+}
+
+.player-div div:first-child {
+    border-bottom: 1px dotted gray;
+}
+
+.player-0-color {
+    background-color: lightsalmon;
+}
+
+.player-1-color {
+    background-color: lightgreen;
+}
+
+.player-2-color {
+    background-color: lightpink;
+}
+
+.player-3-color {
+    background-color: yellow;
+}
+
+/* Stylings for the dialog boxes. */
+.game-dialog {
+    background-color: #c8dae9;
+    width: 80%;
+    height: 80%;
+    margin: 10%;
+}

@@ -1,0 +1,17 @@
+<md-dialog aria-label="New Game Dialog" id="new-game-dialog">
+    <md-dialog-content>
+        <h3>New Game</h3>
+        <label for="player-count-input">Player Count: </label>
+        <input type="number" id="player-count-input">
+    </md-dialog-content>
+    <md-dialog-actions>
+        <md-button class="md-icon-button" ng-click="dc.cancel()" aria-label="Cancel" title="Cancel"
+                   id="cancel-button">
+            <i class="material-icons">not_interested</i>
+        </md-button>
+        <md-button class="md-icon-button" ng-click="dc.confirm()" aria-label="Confirm" title="Confirm"
+                   id="confirm-button">
+            <i class="material-icons">done</i>
+        </md-button>
+    </md-dialog-actions>
+</md-dialog>

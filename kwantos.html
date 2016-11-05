@@ -6,7 +6,7 @@
     <title>Kwantos - the "Are there more...?" Game</title>
 
     <!-- Angular Material style sheet -->
-    <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.css">
+    <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.css">
 
     <link rel="stylesheet" type="text/css" href="style.css">
     <script src="https://code.jquery.com/jquery.min.js"></script>
@@ -20,6 +20,9 @@
     <!-- Angular Material Library -->
     <script src="http://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.js"></script>
 
+    <!-- Material Icons Font -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
     <!-- JavaScript for this program -->
     <script src="kwantos.js"></script>
 </head>
@@ -27,40 +30,37 @@
 <header>
     <md-toolbar>
         <div class="md-toolbar-tools">
-            <h1>Kwantos</h1>
+            <span>Kwantos</span>
+            <span flex></span>
+            <md-button class="md-icon-button" ng-click="kc.help()" aria-label="Help" title="Help"
+                       id="help-button">
+                <i class="material-icons">help_outline</i>
+            </md-button>
+            <md-button class="md-icon-button" ng-click="kc.reset()" aria-label="Reset Game" title="Reset Game"
+                       id="reset-button">
+                <i class="material-icons">replay</i>
+            </md-button>
+            <md-button class="md-icon-button" ng-click="kc.scores()" aria-label="High Scores" title="High Scores"
+                       id="scores-button">
+                <i class="material-icons">star_border</i>
+            </md-button>
         </div>
     </md-toolbar>
 </header>
 <main>
     <div id="players-div">
-        <div id="player-1-div">
-            Player 1
-            Score
-        </div>
-        <div id="player-2-div">
-            Player 2
-            Score
-        </div>
-        <div id="player-3-div">
-            Player 3
-            Score
-        </div>
-        <div id="player-4-div">
-            Player 4
-            Score
+        <div ng-repeat="p in kc.players" id="player-{{$index}}-div" class="player-div player-{{$index}}-color">
+            <div>
+                {{p.name}}
+            </div>
+            <div>
+                {{p.score}}
+            </div>
         </div>
     </div>
 </main>
-<footer>
-    <div>
-        Help
-    </div>
-    <div>
-        Restart
-    </div>
-    <div>
-        High Scores
-    </div>
-</footer>
+
+<p>{{kc.dialogStatus}}</p>
+
 </body>
 </html>
