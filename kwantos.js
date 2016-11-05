@@ -14,8 +14,19 @@ app.controller('KwantosController', function($scope, $log, $mdDialog) {
 
     // Game parameters.
     this.playerCount = null;
-    this.players = [];
+    this.currentPlayerIndex = null;
+    this.players = null;
+    this.currentRound = null;
     this.startingScore = 5000;
+    this.numberOfRounds = 10;
+
+    // Round message display for the current round.
+    this.roundMessage = 'Waiting for new game information...';
+    this.displayRoundMessage = function(message) { this.roundMessage = message; };
+
+    // Status message display at the bottom of the windows.
+    this.statusMessage = '';
+    this.displayStatusMessage = function(message) { this.statusMessage = message; };
 
     // Dialog data.
     this.dialogStatus = '';
@@ -24,11 +35,21 @@ app.controller('KwantosController', function($scope, $log, $mdDialog) {
     this.initialize = function() {
         console.log('initialize');
         this.playerCount = 4;
+
+        // Build the default player information.
+        this.players = [];
+        for (var p = 0; p < this.playerCount; p++) {
+            this.players.push({
+                number: p+1,
+                name:   'Player ' + (p+1),
+                score:  this.startingScore
+            });
+        }
     };
 
     // Click handler for help.
-    this.help = function() {
-        $log.log('help');
+    this.doHelpDialog = function() {
+        $log.log('doHelpDialog');
         $mdDialog.show({
             controller: 'DialogController',
             controllerAs: 'dc',
@@ -38,17 +59,22 @@ app.controller('KwantosController', function($scope, $log, $mdDialog) {
             closeTo: '#help-button',
             clickOutsideToClose: true,
             //bindToController: true,
-            locals: {testName: 'testValue'}
+            locals: {dataSent: {}}
         }).then(function(response){
-            self.dialogStatus = 'Help dialog OK, response: "' + response + '".';
+            self.displayStatusMessage('Help dialog OK, response: "' + response + '".');
         }, function(){
-            self.dialogStatus = 'Help dialog canceled.';
+            self.displayStatusMessage('Help dialog canceled.');
         });
     };
 
+    // Dialog handler for displaying a question and getting an answer.
+    this.doQuestionDialog = function() {
+        $log.log('doQuestionDialog');
+    };
+
     // Click handler for reset game.
-    this.reset = function() {
-        $log.log('reset');
+    this.doResetDialog = function() {
+        $log.log('doResetDialog');
         $mdDialog.show({
             controller: 'DialogController',
             controllerAs: 'dc',
@@ -58,53 +84,85 @@ app.controller('KwantosController', function($scope, $log, $mdDialog) {
             closeTo: '#reset-button',
             clickOutsideToClose: true,
             //bindToController: true,
-            locals: {testName: 'testValue'}
+            locals: {dataSent: { playerCount: this.playerCount,
+                                 players: this.players }}
         }).then(function(response){
-            self.dialogStatus = 'New Game dialog OK, response: "' + response + '".';
+            self.displayStatusMessage('New Game dialog OK, response: "' + response + '".');
+            self.playerCount = response.playerCount;
+            self.players = response.players;
+            self.resetGame();
         }, function(){
-            self.dialogStatus = 'New Game dialog canceled.';
+            self.displayStatusMessage('New Game dialog canceled.');
         });
     };
 
     // Click handler for scores.
-    this.scores = function() {
-        $log.log('scores');
+    this.doScoresDialog = function() {
+        $log.log('doScoresDialog');
+    };
+
+    // Dialog handler for displaying the winner.
+    this.doWinnerDialog = function() {
+        $log.log('doWinnerDialog');
+    };
+
+    // Start the next round.
+    this.nextRound = function() {
+        this.currentRound++;
+        $log.log('nextRound: ' + this.currentRound);
+
+        if (this.currentRound <= this.numberOfRounds) {
+            // Update the round div.
+            this.displayRoundMessage('Round ' + this.currentRound);
+
+            // Reset the player number and start the first player's question.
+            this.currentPlayerIndex = 0;
+            this.doQuestionDialog();
+        } else {
+            // Game is over, display winner dialog and update high scores.
+            this.doWinnerDialog();
+        }
     };
 
     // Reset game.
     this.resetGame = function() {
         console.log('resetGame');
 
-        // Build the players based on playerCount.
-        this.players = [];
+        // Set the player scores back to the default.
         for (var p = 0; p < this.playerCount; p++) {
-            this.players.push({
-                name:   'Player ' + (p+1),
-                score:  this.startingScore
-            });
+            this.players[p].score = this.startingScore;
         }
+
+        // Set the round, current player, etc. back to the defaults.
+        this.currentRound = 0;
+        this.currentPlayerIndex = 1;
+
+        // Go to the next round.
+        this.nextRound();
     };
 
-    // This code runs to start up the app.
+    // This code runs to start up the app, and put up the New Game dialog.
     this.initialize();
-    this.resetGame();
+    this.doResetDialog();
 });
 
 /**
  *  DialogController - common controller for all program dialogs.
  */
-app.controller('DialogController', function($scope, $log, $mdDialog, testName) {
+app.controller('DialogController', function($scope, $log, $mdDialog, dataSent) {
     console.log('DialogController: constructor');
-    this.testName = testName;
+    this.dataSent = dataSent;
+    this.dataReturned = angular.copy(this.dataSent);
+    debugger;
 
     this.cancel = function() {
         console.log('cancel');
-        $mdDialog.hide();
+        $mdDialog.cancel();
     };
 
     this.confirm = function() {
         console.log('confirm');
-        $mdDialog.hide();
+        $mdDialog.hide(this.dataReturned);
     };
 
 });

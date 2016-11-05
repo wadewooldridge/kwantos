@@ -1,9 +1,21 @@
-<md-dialog aria-label="New Game Dialog" id="new-game-dialog">
+<md-dialog aria-label="New Game Dialog" id="new-game-dialog" class="game-dialog neutral-background-color">
     <md-dialog-content>
         <h3>New Game</h3>
-        <label for="player-count-input">Player Count: </label>
-        <input type="number" id="player-count-input">
+        <h4>Number of Players:</h4>
+        <md-radio-group ng-model="dc.dataReturned.playerCount">
+            <md-radio-button ng-repeat="c in [1, 2, 3, 4]" ng-value="c" aria-label="{{c}}" id="new-game-button">
+                {{c}}
+            </md-radio-button>
+        </md-radio-group>
+        <md-divider></md-divider>
+        <h4>Player Names:</h4>
+        <div ng-repeat="p in dc.dataReturned.players" ng-show="p.number <= dc.dataReturned.playerCount">
+            <md-input-container class="player-name-input">
+                <input type="text" ng-model="p.name" required md-maxlength="10" aria-label="Player {{p.name}} name">
+            </md-input-container>
+        </div>
     </md-dialog-content>
+    <md-divider></md-divider>
     <md-dialog-actions>
         <md-button class="md-icon-button" ng-click="dc.cancel()" aria-label="Cancel" title="Cancel"
                    id="cancel-button">

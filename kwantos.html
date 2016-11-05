@@ -32,24 +32,30 @@
         <div class="md-toolbar-tools">
             <span>Kwantos</span>
             <span flex></span>
-            <md-button class="md-icon-button" ng-click="kc.help()" aria-label="Help" title="Help"
+            <md-button class="md-icon-button" ng-click="kc.doHelpDialog()" aria-label="Help" title="Help"
                        id="help-button">
                 <i class="material-icons">help_outline</i>
             </md-button>
-            <md-button class="md-icon-button" ng-click="kc.reset()" aria-label="Reset Game" title="Reset Game"
+            <md-button class="md-icon-button" ng-click="kc.doResetDialog()" aria-label="Reset Game" title="Reset Game"
                        id="reset-button">
                 <i class="material-icons">replay</i>
             </md-button>
-            <md-button class="md-icon-button" ng-click="kc.scores()" aria-label="High Scores" title="High Scores"
+            <md-button class="md-icon-button" ng-click="kc.doScoresDialog()" aria-label="High Scores" title="High Scores"
                        id="scores-button">
                 <i class="material-icons">star_border</i>
             </md-button>
         </div>
     </md-toolbar>
+    <md-divider></md-divider>
 </header>
 <main>
+    <div id="round-div" class="neutral-background-color">
+        <p>{{kc.roundMessage}}</p>
+    </div>
+    <md-divider></md-divider>
     <div id="players-div">
-        <div ng-repeat="p in kc.players" id="player-{{$index}}-div" class="player-div player-{{$index}}-color">
+        <div ng-repeat="p in kc.players" id="player-{{p.number}}-div" class="player-div player-{{p.number}}-color"
+             ng-show="p.number <= kc.playerCount">
             <div>
                 {{p.name}}
             </div>
@@ -58,9 +64,16 @@
             </div>
         </div>
     </div>
+    <md-divider></md-divider>
+    <div id="turn-div">
+
+    </div>
+    <md-divider></md-divider>
+    <div id="status-div" class="neutral-background-color">
+        <p>{{kc.statusMessage}}</p>
+    </div>
 </main>
 
-<p>{{kc.dialogStatus}}</p>
 
 </body>
 </html>
