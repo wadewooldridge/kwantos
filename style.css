@@ -37,7 +37,7 @@ main {
 /* Stylings for the player divs. */
 #players-div {
     width: 100%;
-    height: 15%;
+    height: 12%;
     display: table;
 }
 
@@ -50,7 +50,16 @@ main {
     font-size: 125%;
 }
 
+.player-div div {
+    margin-top: 0.2em;
+}
+.player-div img {
+    height: 1em;
+    width: auto;
+}
+
 .player-div div:first-child {
+    height: 1.5em;
     border-bottom: 1px dotted gray;
 }
 
@@ -70,14 +79,66 @@ main {
     background-color: yellow;
 }
 
-/* Stylings for the turn div and turn dialog. */
+/* Stylings for the turn div and question dialog. */
 #turn-div {
     width: 100%;
-    height: 71%;
+    height: 74%;
     background-image: url("images/question_mark_background.jpg");
     background-repeat: no-repeat;
     background-size: cover;
 
+}
+
+#question-dialog {
+    width: 120%;
+    height: 72%;
+    margin-top: 21%;
+}
+
+#question-dialog p, #question-dialog h3, #question-dialog h4 {
+    margin-top: 0.2em;
+    margin-bottom: 0.3em;
+    text-align: center;
+}
+
+#question-dialog img {
+    height: 1em;
+    width: auto;
+    display: inline;
+}
+
+#question-bet-slider {
+    width: 80%;
+    margin-left: 10%;
+}
+
+#question-left {
+    width: 40%;
+    float: left;
+    text-align: center;
+}
+
+#question-middle {
+    width: 20%;
+    float: left;
+}
+
+#question-right {
+    width: 40%;
+    float: right;
+    text-align: center;
+}
+
+#question-confirm-div {
+    clear: both;
+}
+
+#correct-answer {
+    color: green;
+}
+
+#wrong-answer {
+    color: red;
 }
 
 /* Stylings for the status message at the bottom. */

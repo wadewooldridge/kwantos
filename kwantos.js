@@ -19,6 +19,7 @@ app.controller('KwantosController', function($scope, $log, $mdDialog) {
     this.currentRound = null;
     this.startingScore = 5000;
     this.numberOfRounds = 10;
+    this.gameOver = true;
 
     // Round message display for the current round.
     this.roundMessage = 'Waiting for new game information...';
@@ -47,6 +48,15 @@ app.controller('KwantosController', function($scope, $log, $mdDialog) {
         }
     };
 
+    // Build a random question and its answer.
+    this.buildRandomQuestion = function() {
+        return {
+            itemsName:  'Books in the Library of Congress',
+            answers:    ['red', 'blue'],
+            counts:     [123, 456]
+        }
+    };
+
     // Click handler for help.
     this.doHelpDialog = function() {
         $log.log('doHelpDialog');
@@ -59,7 +69,7 @@ app.controller('KwantosController', function($scope, $log, $mdDialog) {
             closeTo: '#help-button',
             clickOutsideToClose: true,
             //bindToController: true,
-            locals: {dataSent: {}}
+            locals: {dataSent: null, dataReturned: null }
         }).then(function(response){
             self.displayStatusMessage('Help dialog OK, response: "' + response + '".');
         }, function(){
@@ -68,13 +78,47 @@ app.controller('KwantosController', function($scope, $log, $mdDialog) {
     };
 
     // Dialog handler for displaying a question and getting an answer.
-    this.doQuestionDialog = function() {
-        $log.log('doQuestionDialog');
+    this.doQuestionDialog = function(player, question) {
+        $log.log('doQuestionDialog: ' + player.name);
+        var playerElementName = '#player-' + player.number + '-div';
+        var dataSent = {
+            player:     player,
+            question:   question
+        };
+        var dataReturned = {
+            player:     player,
+            betAmount:  Math.floor(player.score / 2),
+            correct:    null
+        };
+
+        $mdDialog.show({
+            controller: 'DialogController',
+            controllerAs: 'dc',
+            templateUrl: 'dialog_template_question.html',
+            parent: '#turn-div',
+            openFrom: playerElementName,
+            closeTo: playerElementName,
+            clickOutsideToClose: false,
+            //bindToController: true,
+            locals: {dataSent: dataSent, dataReturned: dataReturned }
+        }).then(function(response){
+            self.displayStatusMessage('Question dialog OK, response: "' + response + '".');
+            self.updateScore(response);
+            self.nextPlayer();
+        }, function(){
+            self.displayStatusMessage('Question dialog error.');
+            self.gameOver = true;
+        });
     };
 
     // Click handler for reset game.
     this.doResetDialog = function() {
         $log.log('doResetDialog');
+        var dataSent = {
+            playerCount:    this.playerCount,
+            players:        this.players };
+        var dataReturned = angular.copy(dataSent);
+
         $mdDialog.show({
             controller: 'DialogController',
             controllerAs: 'dc',
@@ -84,8 +128,7 @@ app.controller('KwantosController', function($scope, $log, $mdDialog) {
             closeTo: '#reset-button',
             clickOutsideToClose: true,
             //bindToController: true,
-            locals: {dataSent: { playerCount: this.playerCount,
-                                 players: this.players }}
+            locals: {dataSent: dataSent, dataReturned: dataReturned }
         }).then(function(response){
             self.displayStatusMessage('New Game dialog OK, response: "' + response + '".');
             self.playerCount = response.playerCount;
@@ -106,21 +149,34 @@ app.controller('KwantosController', function($scope, $log, $mdDialog) {
         $log.log('doWinnerDialog');
     };
 
-    // Start the next round.
-    this.nextRound = function() {
-        this.currentRound++;
-        $log.log('nextRound: ' + this.currentRound);
+    // Start the next player in this round (or special handling for first player in game).
+    this.nextPlayer = function() {
+        console.log('nextPlayer');
 
-        if (this.currentRound <= this.numberOfRounds) {
-            // Update the round div.
-            this.displayRoundMessage('Round ' + this.currentRound);
-
-            // Reset the player number and start the first player's question.
-            this.currentPlayerIndex = 0;
-            this.doQuestionDialog();
+        if (this.currentPlayerIndex === (this.playerCount - 1)) {
+            // End of round.
+            if (this.currentRound === this.numberOfRounds) {
+                // End of last round = game over.
+                this.doWinnerDialog();
+                this.gameOver = true;
+            } else {
+                // End of the current round; keep going.
+                this.currentRound++;
+                this.displayRoundMessage('Round ' + this.currentRound);
+                this.currentPlayerIndex = 0;
+            }
         } else {
-            // Game is over, display winner dialog and update high scores.
-            this.doWinnerDialog();
+            // Simple update to the next player.
+            this.currentPlayerIndex++;
+        }
+
+        // If we didn't finish the game, put up the next question.
+        if (!this.gameOver) {
+            var player = this.players[this.currentPlayerIndex];
+
+            this.displayStatusMessage(player.name + ' is up.');
+            var question = this.buildRandomQuestion();
+            this.doQuestionDialog(player, question);
         }
     };
 
@@ -133,12 +189,24 @@ app.controller('KwantosController', function($scope, $log, $mdDialog) {
             this.players[p].score = this.startingScore;
         }
 
-        // Set the round, current player, etc. back to the defaults.
+        // Set the round, current player, etc. back to the defaults, to trigger first round / first player.
         this.currentRound = 0;
-        this.currentPlayerIndex = 1;
+        this.currentPlayerIndex = this.playerCount - 1;
+        this.gameOver = false;
 
-        // Go to the next round.
-        this.nextRound();
+        // Go to the next player / round.
+        this.nextPlayer();
+    };
+
+    // Update score based on data returned from question dialog.
+    this.updateScore = function(response) {
+        $log.log('updateScore: Player ' + response.player.number + ', ' +
+            (response.correct ? '+' : '-') + response.betAmount);
+        if (response.correct) {
+            response.player.score += response.betAmount;
+        } else {
+            response.player.score -= response.betAmount;
+        }
     };
 
     // This code runs to start up the app, and put up the New Game dialog.
@@ -149,11 +217,22 @@ app.controller('KwantosController', function($scope, $log, $mdDialog) {
 /**
  *  DialogController - common controller for all program dialogs.
  */
-app.controller('DialogController', function($scope, $log, $mdDialog, dataSent) {
+app.controller('DialogController', function($scope, $log, $mdDialog, dataSent, dataReturned) {
     console.log('DialogController: constructor');
+    var self = this;
     this.dataSent = dataSent;
-    this.dataReturned = angular.copy(this.dataSent);
-    debugger;
+    this.dataReturned = dataReturned;
+
+    // Special handling for the question dialog.
+    this.answerChosen = false;
+    this.answerClicked = function(leftAnswerChosen) {
+        $log.log('answerClicked: ' + (leftAnswerChosen ? 'left' : 'right'));
+        self.answerChosen = true;
+        var leftAnswerIsCorrect = (self.dataSent.question.counts[0] > self.dataSent.question.counts[1]);
+        this.dataReturned.correct = (leftAnswerChosen === leftAnswerIsCorrect);
+    };
+
+    //debugger;
 
     this.cancel = function() {
         console.log('cancel');
