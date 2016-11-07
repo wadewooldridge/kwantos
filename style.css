@@ -68,7 +68,7 @@ main {
 }
 
 .player-2-color {
-    background-color: lightgreen;
+    background-color: palegreen;
 }
 
 .player-3-color {
@@ -76,7 +76,7 @@ main {
 }
 
 .player-4-color {
-    background-color: yellow;
+    background-color: palegoldenrod;
 }
 
 /* Stylings for the turn div and question dialog. */

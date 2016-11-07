@@ -1,7 +1,9 @@
 /**
  *  Kwantos (how many) game.
- *  An exercise in web API usage with Angular.
- *  Copyright (C) 2016 by Wade Wooldridge
+ *  An exercise in web API usage with Angular Materials and web APIs.
+ *  Copyright (C) 2016 by Wade Wooldridge.
+ *
+ *  kwantos.js - Main JavaScript processing, including game play and dialog handling.
  */
 
 /**
@@ -50,9 +52,10 @@ app.controller('KwantosController', function($scope, $log, $mdDialog) {
 
     // Build a random question and its answer.
     this.buildRandomQuestion = function() {
+        var wordPair = getRandomWordPair();
         return {
             itemsName:  'Books in the Library of Congress',
-            answers:    ['red', 'blue'],
+            answers:    wordPair,
             counts:     [123, 456]
         }
     };
@@ -157,7 +160,7 @@ app.controller('KwantosController', function($scope, $log, $mdDialog) {
             // End of round.
             if (this.currentRound === this.numberOfRounds) {
                 // End of last round = game over.
-                this.doWinnerDialog();
+                this.processWinner();
                 this.gameOver = true;
             } else {
                 // End of the current round; keep going.
@@ -178,6 +181,13 @@ app.controller('KwantosController', function($scope, $log, $mdDialog) {
             var question = this.buildRandomQuestion();
             this.doQuestionDialog(player, question);
         }
+    };
+
+    // Process the winner and then put up the scores.
+    this.processWinner = function() {
+        console.log('processWinner');
+
+        this.doWinnerDialog();
     };
 
     // Reset game.
