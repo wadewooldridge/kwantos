@@ -5,11 +5,10 @@
  *
  *  web_apis.js - Handling the web API lookups to get the counts that correspond to the words.
  */
-
-app.controller('ApiController', function($scope, $log, $http) {
+angular.module('KwantosApp').controller('DialogController', ['$scope', '$log', '$http', function($scope, $log, $http) {
     var self = this;
-    $log.log('ApiController init');
-});
+    $log.log('ApiController: constructor');
+}]);
 
 /**
  *  getCountsForLibraryOfCongress - Make API calls for the Library of Congress.

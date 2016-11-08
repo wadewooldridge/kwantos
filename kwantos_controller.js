@@ -3,14 +3,13 @@
  *  An exercise in web API usage with Angular Materials and web APIs.
  *  Copyright (C) 2016 by Wade Wooldridge.
  *
- *  kwantos.js - Main JavaScript processing, including game play and dialog handling.
+ *  kwantos_controller.js - Main game processing.
  */
 
 /**
  *  Angular dependencies.
  */
-var app = angular.module('KwantosApp', ['ngMaterial']);
-app.controller('KwantosController', function($scope, $log, $mdDialog) {
+angular.module('KwantosApp').controller('KwantosController', ['$scope', '$log', '$mdDialog', function($scope, $log, $mdDialog) {
     var self = this;
     $log.log('KwantosController: constructor');
 
@@ -223,43 +222,5 @@ app.controller('KwantosController', function($scope, $log, $mdDialog) {
     // This code runs to start up the app, and put up the New Game dialog.
     this.initialize();
     this.doResetDialog();
-});
+}]);
 
-/**
- *  DialogController - common controller for all program dialogs.
- */
-app.controller('DialogController', function($scope, $log, $mdDialog, dataSent, dataReturned) {
-    console.log('DialogController: constructor');
-    var self = this;
-    this.dataSent = dataSent;
-    this.dataReturned = dataReturned;
-
-    // Special handling for the question dialog.
-    this.answerChosen = false;
-    this.answerClicked = function(leftAnswerChosen) {
-        $log.log('answerClicked: ' + (leftAnswerChosen ? 'left' : 'right'));
-        self.answerChosen = true;
-        var leftAnswerIsCorrect = (self.dataSent.question.counts[0] > self.dataSent.question.counts[1]);
-        this.dataReturned.correct = (leftAnswerChosen === leftAnswerIsCorrect);
-    };
-
-    //debugger;
-
-    this.cancel = function() {
-        console.log('cancel');
-        $mdDialog.cancel();
-    };
-
-    this.confirm = function() {
-        console.log('confirm');
-        $mdDialog.hide(this.dataReturned);
-    };
-
-});
-
-/**
- *  Document ready - initialize the rest of the program.
- */
-$(document).ready(function() {
-    console.log('Document ready');
-});
