@@ -12,7 +12,7 @@
 var app = angular.module('KwantosApp', ['ngMaterial']);
 app.controller('KwantosController', function($scope, $log, $mdDialog) {
     var self = this;
-    $log.log('Controller init');
+    $log.log('KwantosController: constructor');
 
     // Game parameters.
     this.playerCount = null;
@@ -53,10 +53,11 @@ app.controller('KwantosController', function($scope, $log, $mdDialog) {
     // Build a random question and its answer.
     this.buildRandomQuestion = function() {
         var wordPair = getRandomWordPair();
+        var counts = getCountsForLibraryOfCongress(wordPair);
         return {
             itemsName:  'Books in the Library of Congress',
             answers:    wordPair,
-            counts:     [123, 456]
+            counts:     counts
         }
     };
 
