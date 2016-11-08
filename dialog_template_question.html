@@ -31,8 +31,7 @@
         </div>
         <div id="question-confirm-div" ng-show="dc.answerChosen">
             <md-divider></md-divider>
-            <h3 ng-show="dc.dataReturned.correct" id="correct-answer">That is correct!</h3>
-            <h3 ng-hide="dc.dataReturned.correct" id="wrong-answer">Sorry, that is incorrect.</h3>
+            <h3 id="right-or-wrong">{{dc.rightOrWrong}}</h3>
             <p>
                 <md-button class="md-icon-button" ng-click="dc.confirm()" aria-label="OK" title="OK"
                            id="confirm-help-button">

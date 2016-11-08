@@ -16,9 +16,9 @@ angular.module('KwantosApp').controller('DialogController', ['$scope', '$log', '
     function($scope, $log, $mdDialog, dataSent, dataReturned) {
     $log.log('DialogController: constructor');
     var self = this;
-    debugger;
     this.dataSent = dataSent;
     this.dataReturned = dataReturned;
+    this.rightOrWrong = '';
 
     // Special handling for the question dialog.
     this.answerChosen = false;
@@ -27,9 +27,16 @@ angular.module('KwantosApp').controller('DialogController', ['$scope', '$log', '
         self.answerChosen = true;
         var leftAnswerIsCorrect = (self.dataSent.question.counts[0] > self.dataSent.question.counts[1]);
         this.dataReturned.correct = (leftAnswerChosen === leftAnswerIsCorrect);
-    };
 
-    //debugger;
+        // This was better done with ng-show and ng-hide, but flickered the two answers due to overlapped animations.
+        if (self.dataReturned.correct) {
+            self.rightOrWrong = "That is correct!";
+            $('#right-or-wrong').removeClass('wrong-answer').addClass('correct-answer');
+        } else {
+            self.rightOrWrong = "Sorry, that is incorrect.";
+            $('#right-or-wrong').removeClass('correct-answer').addClass('wrong-answer');
+        }
+    };
 
     this.cancel = function() {
         console.log('cancel');

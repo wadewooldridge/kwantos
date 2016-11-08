@@ -9,7 +9,7 @@
 /**
  *  Angular dependencies.
  */
-angular.module('KwantosApp').controller('KwantosController', ['$scope', '$log', '$mdDialog', function($scope, $log, $mdDialog) {
+angular.module('KwantosApp').controller('KwantosController', ['$scope', '$log', '$mdDialog', 'QuestionService', function($scope, $log, $mdDialog, QuestionService) {
     var self = this;
     $log.log('KwantosController: constructor');
 
@@ -46,17 +46,6 @@ angular.module('KwantosApp').controller('KwantosController', ['$scope', '$log', 
                 name:   'Player ' + (p+1),
                 score:  this.startingScore
             });
-        }
-    };
-
-    // Build a random question and its answer.
-    this.buildRandomQuestion = function() {
-        var wordPair = getRandomWordPair();
-        var counts = getCountsForLibraryOfCongress(wordPair);
-        return {
-            itemsName:  'Books in the Library of Congress',
-            answers:    wordPair,
-            counts:     counts
         }
     };
 
@@ -178,7 +167,7 @@ angular.module('KwantosApp').controller('KwantosController', ['$scope', '$log', 
             var player = this.players[this.currentPlayerIndex];
 
             this.displayStatusMessage(player.name + ' is up.');
-            var question = this.buildRandomQuestion();
+            var question = QuestionService.buildRandomQuestion();
             this.doQuestionDialog(player, question);
         }
     };
