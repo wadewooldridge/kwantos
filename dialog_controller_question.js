@@ -3,18 +3,18 @@
  *  An exercise in web API usage with Angular Materials and web APIs.
  *  Copyright (C) 2016 by Wade Wooldridge.
  *
- *  dialog_controller.js - Main processing of the game modal dialogs.
+ *  dialog_controller_question.js - modal dialog controller for main question dialog.
  */
 
 /**
  *  Angular dependencies.
  */
 /**
- *  DialogController - common controller for all program dialogs.
+ *  DialogController - modal dialog controller for main question dialog.
  */
-angular.module('KwantosApp').controller('DialogController', ['$scope', '$log', '$mdDialog', 'dataSent', 'dataReturned',
+angular.module('KwantosApp').controller('DialogControllerQuestion', ['$scope', '$log', '$mdDialog', 'dataSent', 'dataReturned',
     function($scope, $log, $mdDialog, dataSent, dataReturned) {
-    $log.log('DialogController: constructor');
+    $log.log('DialogControllerQuestion: constructor');
     var self = this;
     this.dataSent = dataSent;
     this.dataReturned = dataReturned;
@@ -39,12 +39,12 @@ angular.module('KwantosApp').controller('DialogController', ['$scope', '$log', '
     };
 
     this.cancel = function() {
-        console.log('cancel');
+        console.log('DialogControllerQuestion: cancel');
         $mdDialog.cancel();
     };
 
     this.confirm = function() {
-        console.log('confirm');
+        console.log('DialogControllerQuestion: confirm');
         $mdDialog.hide(this.dataReturned);
     };
 

@@ -11,7 +11,7 @@
  *  @returns    Array of two words.
  */
 function getRandomWordPair() {
-    console.log('getRandomPair');
+    console.log('getRandomWordPair');
     return apWordPairs[Math.floor(Math.random() * apWordPairs.length)];
 }
 

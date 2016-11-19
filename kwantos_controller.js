@@ -53,7 +53,7 @@ angular.module('KwantosApp').controller('KwantosController', ['$scope', '$log', 
     this.doHelpDialog = function() {
         $log.log('doHelpDialog');
         $mdDialog.show({
-            controller: 'DialogController',
+            controller: 'DialogControllerHelp',
             controllerAs: 'dc',
             templateUrl: 'dialog_template_help.html',
             parent: angular.element(document.body),
@@ -66,6 +66,34 @@ angular.module('KwantosApp').controller('KwantosController', ['$scope', '$log', 
             self.displayStatusMessage('Help dialog OK, response: "' + response + '".');
         }, function(){
             self.displayStatusMessage('Help dialog canceled.');
+        });
+    };
+
+    // Click handler for new game.
+    this.doNewGameDialog = function() {
+        $log.log('doNewGameDialog');
+        var dataSent = {
+            playerCount:    this.playerCount,
+            players:        this.players };
+        var dataReturned = angular.copy(dataSent);
+
+        $mdDialog.show({
+            controller: 'DialogControllerNewGame',
+            controllerAs: 'dc',
+            templateUrl: 'dialog_template_new_game.html',
+            parent: angular.element(document.body),
+            openFrom: '#reset-button',
+            closeTo: '#reset-button',
+            clickOutsideToClose: true,
+            //bindToController: true,
+            locals: {dataSent: dataSent, dataReturned: dataReturned }
+        }).then(function(response){
+            self.displayStatusMessage('New Game dialog OK, response: "' + response + '".');
+            self.playerCount = response.playerCount;
+            self.players = response.players;
+            self.resetGame();
+        }, function(){
+            self.displayStatusMessage('New Game dialog canceled.');
         });
     };
 
@@ -84,7 +112,7 @@ angular.module('KwantosApp').controller('KwantosController', ['$scope', '$log', 
         };
 
         $mdDialog.show({
-            controller: 'DialogController',
+            controller: 'DialogControllerQuestion',
             controllerAs: 'dc',
             templateUrl: 'dialog_template_question.html',
             parent: '#turn-div',
@@ -100,34 +128,6 @@ angular.module('KwantosApp').controller('KwantosController', ['$scope', '$log', 
         }, function(){
             self.displayStatusMessage('Question dialog error.');
             self.gameOver = true;
-        });
-    };
-
-    // Click handler for reset game.
-    this.doResetDialog = function() {
-        $log.log('doResetDialog');
-        var dataSent = {
-            playerCount:    this.playerCount,
-            players:        this.players };
-        var dataReturned = angular.copy(dataSent);
-
-        $mdDialog.show({
-            controller: 'DialogController',
-            controllerAs: 'dc',
-            templateUrl: 'dialog_template_new_game.html',
-            parent: angular.element(document.body),
-            openFrom: '#reset-button',
-            closeTo: '#reset-button',
-            clickOutsideToClose: true,
-            //bindToController: true,
-            locals: {dataSent: dataSent, dataReturned: dataReturned }
-        }).then(function(response){
-            self.displayStatusMessage('New Game dialog OK, response: "' + response + '".');
-            self.playerCount = response.playerCount;
-            self.players = response.players;
-            self.resetGame();
-        }, function(){
-            self.displayStatusMessage('New Game dialog canceled.');
         });
     };
 
@@ -167,8 +167,18 @@ angular.module('KwantosApp').controller('KwantosController', ['$scope', '$log', 
             var player = this.players[this.currentPlayerIndex];
 
             this.displayStatusMessage(player.name + ' is up.');
-            var question = QuestionService.buildRandomQuestion();
-            this.doQuestionDialog(player, question);
+
+            QuestionService.buildRandomQuestion().then(
+                function onSuccess(response) {
+                    console.log('buildRandomQuestion: success');
+                    var question = response;
+                    self.doQuestionDialog(player, question);
+                },
+                function onFailure(response) {
+                    console.log('buildRandomQuestion: failure: ' + response);
+                    self.displayStatusMessage('Failed to load question: ' + response);
+                }
+            );
         }
     };
 
@@ -210,6 +220,6 @@ angular.module('KwantosApp').controller('KwantosController', ['$scope', '$log', 
 
     // This code runs to start up the app, and put up the New Game dialog.
     this.initialize();
-    this.doResetDialog();
+    this.doNewGameDialog();
 }]);
 
