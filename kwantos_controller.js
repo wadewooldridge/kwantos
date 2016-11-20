@@ -118,7 +118,7 @@ angular.module('KwantosApp').controller('KwantosController', ['$scope', '$log', 
             parent: '#turn-div',
             openFrom: playerElementName,
             closeTo: playerElementName,
-            clickOutsideToClose: false,
+            //clickOutsideToClose: false,
             //bindToController: true,
             locals: {dataSent: dataSent, dataReturned: dataReturned }
         }).then(function(response){
@@ -171,8 +171,7 @@ angular.module('KwantosApp').controller('KwantosController', ['$scope', '$log', 
             QuestionService.buildRandomQuestion().then(
                 function onSuccess(response) {
                     console.log('buildRandomQuestion: success');
-                    var question = response;
-                    self.doQuestionDialog(player, question);
+                    self.doQuestionDialog(player, QuestionService.currentQuestion);
                 },
                 function onFailure(response) {
                     console.log('buildRandomQuestion: failure: ' + response);

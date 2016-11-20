@@ -167,7 +167,7 @@ main {
     display: block;
 }
 
-#new-game-button {
+.player-count-button {
     display: inline-block;
     width: 20%;
 }

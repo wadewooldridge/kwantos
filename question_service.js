@@ -16,8 +16,10 @@ angular.module('KwantosApp').service('QuestionService', ['$http', '$log', '$q', 
     this.currentQuestion = {
         countFunction: null,
         itemsName: 'TBD',
-        answers: ['TBD', 'TBD'],
-        counts: [0, 0]
+        answers: [
+            {word: 'TBD', count: 0},
+            {word: 'TBD', count: 0}
+        ]
     };
 
     /**
@@ -27,8 +29,10 @@ angular.module('KwantosApp').service('QuestionService', ['$http', '$log', '$q', 
         $log.log('resetCurrentQuestion');
         this.currentQuestion.countFunction = null;
         this.currentQuestion.itemsName = 'TBD';
-        this.currentQuestion.answers = ['TBD', 'TBD'];
-        this.currentQuestion.counts = [0, 0];
+        for (var i = 0; i < 2; i++) {
+            this.currentQuestion.answers[i].word = 'TBD';
+            this.currentQuestion.answers[i].count = 0;
+        }
     };
 
     /**
@@ -38,18 +42,24 @@ angular.module('KwantosApp').service('QuestionService', ['$http', '$log', '$q', 
     this.buildRandomQuestion = function() {
         $log.log('buildRandomQuestion');
         this.resetCurrentQuestion();
-        this.currentQuestion.answers = getRandomWordPair();
-        $log.log('buildRandomQuestion: words: ' + this.currentQuestion.answers);
+        var words = getRandomWordPair();
+        this.currentQuestion.answers[0].word = words[0];
+        this.currentQuestion.answers[1].word = words[1];
+
+        $log.log('buildRandomQuestion: words: ' + this.currentQuestion.answers[0].word + ', ' +
+                                                  this.currentQuestion.answers[1].word);
 
         // TODO: Randomly select the type of lookup.
         this.currentCountFunction = this.getCountsForGeoNames;
         this.currentQuestion.itemsName = 'place names in the world';
 
-        // Get the count for the first word.
-        return this.currentCountFunction(this.currentQuestion.answers[0])
-            .then(function onSuccess(response) {
-                $log.log('Get count success: ' + response);
-                self.currentQuestion.counts[0] = response;
+        // Get the count for both words.
+        return $q.all([
+            this.currentCountFunction(this.currentQuestion.answers[0]),
+            this.currentCountFunction(this.currentQuestion.answers[1])
+        ])
+            .then(function onSuccess(results) {
+                $log.log('Get count success: ' + results);
             },
             function onFailure(response) {
                 $log.log('Get count failure: ' + response);
@@ -60,14 +70,14 @@ angular.module('KwantosApp').service('QuestionService', ['$http', '$log', '$q', 
 
     /**
      *  getCountsForGeoNames - Make API calls for GeoNames.
-     *  @param      word        Word to look up.
-     *  @returns                Count for this word.
+     *  @param wordObject {object}  Word object to look up.
+     *  @returns {object}           Promise for the web search.
      */
-    this.getCountsForGeoNames = function(word) {
-        $log.log('getCountsForGeoNames: "' + word + '"');
+    this.getCountsForGeoNames = function(wordObject) {
+        $log.log('getCountsForGeoNames: "' + wordObject.word + '"');
         var urlBase = 'http://api.geonames.org/searchJSON?name=';
         var urlEnd = '&username=kwantos&maxRows=1&callback=JSON_CALLBACK';
-        var url = urlBase + word + urlEnd;
+        var url = urlBase + wordObject.word + urlEnd;
         $log.log('url: ' + url);
 
         var defer = $q.defer();
@@ -76,12 +86,12 @@ angular.module('KwantosApp').service('QuestionService', ['$http', '$log', '$q', 
             url:        url,
             method:     'jsonp'
         }).success(function(response) {
-            $log.log('getCountsForGeoNames: success, count=' + response.totalResultsCount);
-            debugger;
-            defer.resolve(response.totalResultsCount);
+            var count = response.totalResultsCount;
+            $log.log('getCountsForGeoNames: success, count=' + count);
+            wordObject.count = count;
+            defer.resolve(count);
         }).error(function(response) {
             $log.log('getCountsForGeoNames: failure: ' + response);
-            debugger;
             defer.reject('HTTP request failed.');
         });
 

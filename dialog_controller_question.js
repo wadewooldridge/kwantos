@@ -12,11 +12,12 @@
 /**
  *  DialogController - modal dialog controller for main question dialog.
  */
-angular.module('KwantosApp').controller('DialogControllerQuestion', ['$scope', '$log', '$mdDialog', 'dataSent', 'dataReturned',
-    function($scope, $log, $mdDialog, dataSent, dataReturned) {
+angular.module('KwantosApp').controller('DialogControllerQuestion', ['$scope', '$log', '$mdDialog', 'dataSent', 'dataReturned', function($scope, $log, $mdDialog, dataSent, dataReturned) {
     $log.log('DialogControllerQuestion: constructor');
     var self = this;
     this.dataSent = dataSent;
+    this.player = dataSent.player;
+    this.question = dataSent.question;
     this.dataReturned = dataReturned;
     this.rightOrWrong = '';
 
@@ -25,7 +26,7 @@ angular.module('KwantosApp').controller('DialogControllerQuestion', ['$scope', '
     this.answerClicked = function(leftAnswerChosen) {
         $log.log('answerClicked: ' + (leftAnswerChosen ? 'left' : 'right'));
         self.answerChosen = true;
-        var leftAnswerIsCorrect = (self.dataSent.question.counts[0] > self.dataSent.question.counts[1]);
+        var leftAnswerIsCorrect = (self.question.answers[0].count > self.question.answers[1].count);
         this.dataReturned.correct = (leftAnswerChosen === leftAnswerIsCorrect);
 
         // This was better done with ng-show and ng-hide, but flickered the two answers due to overlapped animations.

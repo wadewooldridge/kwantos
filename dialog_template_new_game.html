@@ -3,7 +3,7 @@
         <h3>New Game</h3>
         <h4>Number of Players:</h4>
         <md-radio-group ng-model="dc.dataReturned.playerCount">
-            <md-radio-button ng-repeat="c in [1, 2, 3, 4]" ng-value="c" aria-label="{{c}}" id="new-game-button">
+            <md-radio-button ng-repeat="c in [1, 2, 3, 4]" ng-value="c" aria-label="{{c}}" class="player-count-button">
                 {{c}}
             </md-radio-button>
         </md-radio-group>
