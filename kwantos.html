@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Kwantos - the "Are there more...?" Game</title>
+
+    <!-- Angular Material style sheet -->
+    <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.css">
+
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <script src="https://code.jquery.com/jquery.min.js"></script>
+
+    <!-- Angular Material requires Angular.js Libraries -->
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-animate.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-aria.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-messages.min.js"></script>
+
+    <!-- Angular Material Library -->
+    <script src="http://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.js"></script>
+
+    <!-- Material Icons Font -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <!-- JavaScript for this program -->
+    <script src="kwantos_app.js"></script>
+    <script src="word_pairs.js"></script>
+    <script src="question_service.js"></script>
+    <script src="kwantos_controller.js"></script>
+    <script src="dialog_controller_help.js"></script>
+    <script src="dialog_controller_new_game.js"></script>
+    <script src="dialog_controller_question.js"></script>
+</head>
+<body ng-app="KwantosApp" ng-controller="KwantosController as kc">
+<header>
+    <md-toolbar>
+        <div class="md-toolbar-tools">
+            <span>Kwantos</span>
+            <span flex></span>
+            <md-button class="md-icon-button" ng-click="kc.doHelpDialog()" aria-label="Help" title="Help"
+                       id="help-button">
+                <i class="material-icons">help_outline</i>
+            </md-button>
+            <md-button class="md-icon-button" ng-click="kc.doNewGameDialog()" aria-label="New Game" title="New Game"
+                       id="new-game-button">
+                <i class="material-icons">replay</i>
+            </md-button>
+            <md-button class="md-icon-button" ng-click="kc.doScoresDialog()" aria-label="High Scores" title="High Scores"
+                       id="scores-button">
+                <i class="material-icons">star_border</i>
+            </md-button>
+        </div>
+    </md-toolbar>
+    <md-divider></md-divider>
+</header>
+<main>
+    <div id="round-div" class="neutral-background-color">
+        <p>{{kc.roundMessage}}</p>
+    </div>
+    <md-divider></md-divider>
+    <div id="players-div">
+        <div ng-repeat="p in kc.players" id="player-{{p.number}}-div" class="player-div player-{{p.number}}-color"
+             ng-show="p.number <= kc.playerCount">
+            <div>
+                {{p.name}}
+            </div>
+            <div>
+                <img src="images/coin.png">&nbsp;{{p.score}}
+            </div>
+        </div>
+    </div>
+    <md-divider></md-divider>
+    <div id="turn-div">
+
+    </div>
+    <md-divider></md-divider>
+    <div id="status-div" class="neutral-background-color">
+        <p>{{kc.statusMessage}}</p>
+    </div>
+</main>
+
+
+</body>
+</html>

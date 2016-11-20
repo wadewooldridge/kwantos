@@ -1,0 +1,43 @@
+<md-dialog aria-label="Question Dialog" id="question-dialog" class="player-{{dc.dataSent.player.number}}-color" md-is-locked-open="true">
+    <md-dialog-content>
+        <h3>Question for {{dc.player.name}}:</h3>
+        <h4>Place your bet:</h4>
+        <md-slider-container id="question-bet-slider">
+            <md-slider ng-model="dc.dataReturned.betAmount" min="100" max="{{dc.dataSent.player.score}}" step="100"
+                       aria-label="Bet Amount"></md-slider>
+        </md-slider-container>
+        <p><span><img src="images/coin.png"></span>&nbsp;<span>{{dc.dataReturned.betAmount}}</span></p>
+        <md-divider></md-divider>
+        <h4>Then make your choice:</h4>
+        <p>Are there more</p>
+        <p><strong>{{dc.question.itemsName}}</strong></p>
+        <p>containing the word</p>
+        <div id="question-left">
+            <md-button class="md-primary md-raised choice-button" ng-click="dc.answerClicked(true)"
+                       aria-label="Left Choice" title="Left Choice">
+                {{dc.question.answers[0].word}}
+            </md-button>
+            <p ng-show="dc.answerChosen">Count: {{dc.question.answers[0].count}}</p>
+        </div>
+        <div id="question-middle">
+            <h3>OR</h3>
+        </div>
+        <div id="question-right">
+            <md-button class="md-primary md-raised choice-button" ng-click="dc.answerClicked(false)"
+                       aria-label="Right Choice" title="Right Choice">
+                {{dc.question.answers[1].word}}
+            </md-button>
+            <p ng-show="dc.answerChosen">Count: {{dc.question.answers[1].count}}</p>
+        </div>
+        <div id="question-confirm-div" ng-show="dc.answerChosen">
+            <md-divider></md-divider>
+            <h3 id="right-or-wrong">{{dc.rightOrWrong}}</h3>
+            <p>
+                <md-button class="md-icon-button" ng-click="dc.confirm()" aria-label="OK" title="OK"
+                           id="confirm-help-button">
+                    <i class="material-icons">done</i>
+                </md-button>
+            </p>
+        </div>
+    </md-dialog-content>
+</md-dialog>
