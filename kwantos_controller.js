@@ -16,11 +16,18 @@ angular.module('KwantosApp').controller('KwantosController', ['$scope', '$log', 
     // Game parameters.
     this.playerCount = null;
     this.currentPlayerIndex = null;
+    this.currentPlayer = null;
     this.players = null;
     this.currentRound = null;
     this.startingScore = 5000;
     this.numberOfRounds = 10;
     this.gameOver = true;
+
+    // Status for the current question in progress.
+    this.question = null;
+    this.showQuestion = false;
+    this.answerChosen = false;
+    this.rightOrWrong = '';
 
     // Round message display for the current round.
     this.roundMessage = 'Waiting for new game information...';
@@ -96,7 +103,7 @@ angular.module('KwantosApp').controller('KwantosController', ['$scope', '$log', 
             self.displayStatusMessage('New Game dialog canceled.');
         });
     };
-
+/*
     // Dialog handler for displaying a question and getting an answer.
     this.doQuestionDialog = function(player, question) {
         $log.log('doQuestionDialog: ' + player.name);
@@ -130,7 +137,7 @@ angular.module('KwantosApp').controller('KwantosController', ['$scope', '$log', 
             self.gameOver = true;
         });
     };
-
+*/
     // Click handler for scores.
     this.doScoresDialog = function() {
         $log.log('doScoresDialog');
@@ -161,6 +168,7 @@ angular.module('KwantosApp').controller('KwantosController', ['$scope', '$log', 
             // Simple update to the next player.
             this.currentPlayerIndex++;
         }
+        this.currentPlayer = this.players[this.currentPlayerIndex];
 
         // If we didn't finish the game, put up the next question.
         if (!this.gameOver) {
@@ -171,14 +179,39 @@ angular.module('KwantosApp').controller('KwantosController', ['$scope', '$log', 
             QuestionService.buildRandomQuestion().then(
                 function onSuccess(response) {
                     console.log('buildRandomQuestion: success');
-                    self.doQuestionDialog(player, QuestionService.currentQuestion);
+                    self.question = QuestionService.currentQuestion;
+
                 },
                 function onFailure(response) {
                     console.log('buildRandomQuestion: failure: ' + response);
                     self.displayStatusMessage('Failed to load question: ' + response);
+                    self.gameOver = true;
                 }
             );
         }
+    };
+
+    // Handle the user clicking on either answer.
+    this.answerClicked = function(leftAnswerChosen) {
+        $log.log('answerClicked: ' + (leftAnswerChosen ? 'left' : 'right'));
+        self.answerChosen = true;
+        var leftAnswerIsCorrect = (self.question.answers[0].count > self.question.answers[1].count);
+        this.dataReturned.correct = (leftAnswerChosen === leftAnswerIsCorrect);
+
+        // This was better done with ng-show and ng-hide, but flickered the two answers due to overlapped animations.
+        if (self.dataReturned.correct) {
+            self.rightOrWrong = "That is correct!";
+            $('#right-or-wrong').removeClass('wrong-answer').addClass('correct-answer');
+        } else {
+            self.rightOrWrong = "Sorry, that is incorrect.";
+            $('#right-or-wrong').removeClass('correct-answer').addClass('wrong-answer');
+        }
+    };
+
+    // Handle the dismiss button for the current question.
+    this.confirmQuestion = function() {
+        $log.log('confirmQuestion');
+        this.showQuestion = false;
     };
 
     // Process the winner and then put up the scores.
