@@ -12,6 +12,7 @@
 /**
  *  DialogController - modal dialog controller for main question dialog.
  */
+/*
 angular.module('KwantosApp').controller('DialogControllerQuestion', ['$scope', '$log', '$mdDialog', 'dataSent', 'dataReturned', function($scope, $log, $mdDialog, dataSent, dataReturned) {
     $log.log('DialogControllerQuestion: constructor');
     var self = this;
@@ -50,3 +51,4 @@ angular.module('KwantosApp').controller('DialogControllerQuestion', ['$scope', '
     };
 
 }]);
+*/
