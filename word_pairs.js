@@ -12,14 +12,14 @@
  */
 function getRandomWordPair() {
     console.log('getRandomWordPair');
-    return apWordPairs[Math.floor(Math.random() * apWordPairs.length)];
+    return gaWordPairs[Math.floor(Math.random() * gaWordPairs.length)];
 }
 
 /**
- *  apWordPairs - Main data set for game play.
+ *  gaWordPairs - Main data set for game play.
  *  @type       string[][]
  */
-var apWordPairs = [
+var gaWordPairs = [
     ['adventure', 'journey'],
     ['africa', 'europe'],
     ['airplane', 'rocket'],

@@ -79,16 +79,22 @@ main {
     background-color: palegoldenrod;
 }
 
-/* Stylings for the turn div and question dialog. */
+.player-selected {
+    font-weight: bold;
+    border: 4px solid black;
+    #border-radius: 8px;
+}
+
+/* Stylings for the turn div. */
 #turn-div {
     position: relative;
     width: 100%;
     height: 74%;
     box-sizing: border-box;
     border: 2px solid black;
-    background-image: url("images/question_mark_background.jpg");
-    background-repeat: no-repeat;
-    background-size: cover;
+    #background-image: url("images/question_mark_background.jpg");
+    #background-repeat: no-repeat;
+    #background-size: cover;
 }
 
 #turn-div p, #turn-div h3, #turn-div h4 {
@@ -148,6 +154,7 @@ main {
 #status-div p {
     margin: 0;
     bottom: 0;
+    text-align: center;
     padding-top: 1%;
 }
 

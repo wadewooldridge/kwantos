@@ -12,19 +12,19 @@
 /**
  *  DialogControllerNewGame - modal dialog controller for new game dialog
  */
-angular.module('KwantosApp').controller('DialogControllerNewGame', ['$scope', '$log', '$mdDialog', 'dataSent', 'dataReturned', function($scope, $log, $mdDialog, dataSent, dataReturned) {
+angular.module('KwantosApp').controller('DialogControllerNewGame', ['$scope', '$log', '$mdDialog', 'dataSent', function($scope, $log, $mdDialog, dataSent) {
     $log.log('DialogControllerNewGame: constructor');
     var self = this;
     this.dataSent = dataSent;
-    this.dataReturned = dataReturned;
+    this.dataReturned = angular.copy(dataSent);
 
     this.cancel = function() {
-        console.log('DialogControllerNewGame: cancel');
+        $log.log('DialogControllerNewGame: cancel');
         $mdDialog.cancel();
     };
 
     this.confirm = function() {
-        console.log('DialogControllerNewGame: confirm');
+        $log.log('DialogControllerNewGame: confirm');
         $mdDialog.hide(this.dataReturned);
     };
 
