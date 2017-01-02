@@ -61,7 +61,8 @@
     <md-divider></md-divider>
     <div id="players-div">
         <div ng-repeat="p in kc.players" id="player-{{p.number}}-div" class="player-div player-{{p.number}}-color"
-             ng-show="p.number <= kc.playerCount">
+             ng-show="p.number <= kc.playerCount"
+             ng-class="{'player-selected': p.index === kc.currentPlayerIndex}">
             <div>
                 {{p.name}}
             </div>
@@ -70,22 +71,22 @@
             </div>
         </div>
     </div>
-    <md-divider></md-divider>
-    <div id="turn-div" ng-display="kc.showQuestion">
+    <div id="turn-div" ng-show="!kc.gameOver" class="player-{{kc.currentPlayerIndex+1}}-color">
         <h3>Question for {{kc.currentPlayer.name}}:</h3>
         <h4>Place your bet:</h4>
         <md-slider-container id="question-bet-slider">
-            <md-slider ng-model="kc.dataReturned.betAmount" min="100" max="{{kc.player.score}}" step="100"
+            <md-slider ng-model="kc.currentBetAmount" min="100" max="{{kc.currentPlayer.score}}" step="100"
                        aria-label="Bet Amount"></md-slider>
         </md-slider-container>
-        <p><span><img src="images/coin.png"></span>&nbsp;<span>{{kc.dataReturned.betAmount}}</span></p>
+        <p><span><img src="images/coin.png"></span>&nbsp;<span>{{kc.currentBetAmount}}</span></p>
         <md-divider></md-divider>
         <h4>Then make your choice:</h4>
         <p>Are there more</p>
         <p><strong>{{kc.question.itemsName}}</strong></p>
         <p>containing the word</p>
         <div id="question-left">
-            <md-button class="md-primary md-raised choice-button" ng-click="kc.answerClicked(true)"
+            <md-button class="md-primary md-raised choice-button"
+                       ng-disabled="kc.answerChosen" ng-click="kc.answerClicked(true)"
                        aria-label="Left Choice" title="Left Choice">
                 {{kc.question.answers[0].word}}
             </md-button>
@@ -95,7 +96,8 @@
             <h3>OR</h3>
         </div>
         <div id="question-right">
-            <md-button class="md-primary md-raised choice-button" ng-click="kc.answerClicked(false)"
+            <md-button class="md-primary md-raised choice-button"
+                       ng-disabled="kc.answerChosen" ng-click="kc.answerClicked(false)"
                        aria-label="Right Choice" title="Right Choice">
                 {{kc.question.answers[1].word}}
             </md-button>
@@ -117,7 +119,5 @@
         <p>{{kc.statusMessage}}</p>
     </div>
 </main>
-
-
 </body>
 </html>

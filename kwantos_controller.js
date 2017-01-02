@@ -15,17 +15,19 @@ angular.module('KwantosApp').controller('KwantosController', ['$scope', '$log', 
 
     // Game parameters.
     this.playerCount = null;
+    this.players = null;
+
+    this.currentRound = null;
     this.currentPlayerIndex = null;
     this.currentPlayer = null;
-    this.players = null;
-    this.currentRound = null;
+    this.currentBetAmount = null;
+
     this.startingScore = 5000;
     this.numberOfRounds = 10;
     this.gameOver = true;
 
     // Status for the current question in progress.
     this.question = null;
-    this.showQuestion = false;
     this.answerChosen = false;
     this.rightOrWrong = '';
 
@@ -49,6 +51,7 @@ angular.module('KwantosApp').controller('KwantosController', ['$scope', '$log', 
         this.players = [];
         for (var p = 0; p < this.playerCount; p++) {
             this.players.push({
+                index:  p,
                 number: p+1,
                 name:   'Player ' + (p+1),
                 score:  this.startingScore
@@ -81,8 +84,8 @@ angular.module('KwantosApp').controller('KwantosController', ['$scope', '$log', 
         $log.log('doNewGameDialog');
         var dataSent = {
             playerCount:    this.playerCount,
-            players:        this.players };
-        var dataReturned = angular.copy(dataSent);
+            players:        this.players
+        };
 
         $mdDialog.show({
             controller: 'DialogControllerNewGame',
@@ -93,7 +96,7 @@ angular.module('KwantosApp').controller('KwantosController', ['$scope', '$log', 
             closeTo: '#reset-button',
             clickOutsideToClose: true,
             //bindToController: true,
-            locals: {dataSent: dataSent, dataReturned: dataReturned }
+            locals: {dataSent: dataSent }
         }).then(function(response){
             self.displayStatusMessage('New Game dialog OK, response: "' + response + '".');
             self.playerCount = response.playerCount;
@@ -103,41 +106,7 @@ angular.module('KwantosApp').controller('KwantosController', ['$scope', '$log', 
             self.displayStatusMessage('New Game dialog canceled.');
         });
     };
-/*
-    // Dialog handler for displaying a question and getting an answer.
-    this.doQuestionDialog = function(player, question) {
-        $log.log('doQuestionDialog: ' + player.name);
-        var playerElementName = '#player-' + player.number + '-div';
-        var dataSent = {
-            player:     player,
-            question:   question
-        };
-        var dataReturned = {
-            player:     player,
-            betAmount:  Math.floor(player.score / 2),
-            correct:    null
-        };
 
-        $mdDialog.show({
-            controller: 'DialogControllerQuestion',
-            controllerAs: 'dc',
-            templateUrl: 'dialog_template_question.html',
-            parent: '#turn-div',
-            openFrom: playerElementName,
-            closeTo: playerElementName,
-            //clickOutsideToClose: false,
-            //bindToController: true,
-            locals: {dataSent: dataSent, dataReturned: dataReturned }
-        }).then(function(response){
-            self.displayStatusMessage('Question dialog OK, response: "' + response + '".');
-            self.updateScore(response);
-            self.nextPlayer();
-        }, function(){
-            self.displayStatusMessage('Question dialog error.');
-            self.gameOver = true;
-        });
-    };
-*/
     // Click handler for scores.
     this.doScoresDialog = function() {
         $log.log('doScoresDialog');
@@ -173,8 +142,9 @@ angular.module('KwantosApp').controller('KwantosController', ['$scope', '$log', 
         // If we didn't finish the game, put up the next question.
         if (!this.gameOver) {
             var player = this.players[this.currentPlayerIndex];
-
             this.displayStatusMessage(player.name + ' is up.');
+            this.currentBetAmount = Math.max(Math.floor(player.score / 2), 100);
+            this.answerChosen = false;
 
             QuestionService.buildRandomQuestion().then(
                 function onSuccess(response) {
@@ -196,22 +166,26 @@ angular.module('KwantosApp').controller('KwantosController', ['$scope', '$log', 
         $log.log('answerClicked: ' + (leftAnswerChosen ? 'left' : 'right'));
         self.answerChosen = true;
         var leftAnswerIsCorrect = (self.question.answers[0].count > self.question.answers[1].count);
-        this.dataReturned.correct = (leftAnswerChosen === leftAnswerIsCorrect);
+        var correctAnswerChosen = (leftAnswerChosen === leftAnswerIsCorrect);
 
         // This was better done with ng-show and ng-hide, but flickered the two answers due to overlapped animations.
-        if (self.dataReturned.correct) {
+        if (correctAnswerChosen) {
             self.rightOrWrong = "That is correct!";
             $('#right-or-wrong').removeClass('wrong-answer').addClass('correct-answer');
         } else {
             self.rightOrWrong = "Sorry, that is incorrect.";
             $('#right-or-wrong').removeClass('correct-answer').addClass('wrong-answer');
         }
+
+        // Update the score, then wait for the user to confirm/dismiss the current question.
+        self.updateScore(correctAnswerChosen);
+        self.displayStatusMessage('Hit confirm to move to the next player.');
     };
 
     // Handle the dismiss button for the current question.
     this.confirmQuestion = function() {
         $log.log('confirmQuestion');
-        this.showQuestion = false;
+        this.nextPlayer();
     };
 
     // Process the winner and then put up the scores.
@@ -240,13 +214,12 @@ angular.module('KwantosApp').controller('KwantosController', ['$scope', '$log', 
     };
 
     // Update score based on data returned from question dialog.
-    this.updateScore = function(response) {
-        $log.log('updateScore: Player ' + response.player.number + ', ' +
-            (response.correct ? '+' : '-') + response.betAmount);
-        if (response.correct) {
-            response.player.score += response.betAmount;
+    this.updateScore = function(correct) {
+        $log.log('updateScore: ' + correct);
+        if (correct) {
+            this.currentPlayer.score += this.currentBetAmount;
         } else {
-            response.player.score -= response.betAmount;
+            this.currentPlayer.score -= this.currentBetAmount;
         }
     };
 
