@@ -9,21 +9,25 @@
 /**
  *  Angular dependencies.
  */
-angular.module('KwantosApp').controller('KwantosController', ['$scope', '$log', '$mdDialog', 'QuestionService', function($scope, $log, $mdDialog, QuestionService) {
+angular.module('KwantosApp').controller('KwantosController',
+    ['$scope', '$log', '$mdDialog', 'QuestionService', 'HighScoresService',
+        function($scope, $log, $mdDialog, QuestionService, HighScoresService) {
     var self = this;
     $log.log('KwantosController: constructor');
 
     // Game parameters.
-    this.playerCount = null;
-    this.players = null;
+    this.playerCount = null;                    // Current player count.
+    this.players = null;                        // Current array of players.
+    this.winners = null;                        // Players array sorted by scores.
 
-    this.currentRound = null;
+    this.currentRound = null;                   // Current round in game.
     this.currentPlayerIndex = null;
     this.currentPlayer = null;
     this.currentBetAmount = null;
 
-    this.startingScore = 5000;
+    this.startingScore = 5000;                  // Starting score for each player.
     this.numberOfRounds = 10;
+    this.numberOfRounds = 2;        // DEBUG.
     this.gameOver = true;
 
     // Status for the current question in progress.
@@ -107,14 +111,50 @@ angular.module('KwantosApp').controller('KwantosController', ['$scope', '$log', 
         });
     };
 
-    // Click handler for scores.
-    this.doScoresDialog = function() {
-        $log.log('doScoresDialog');
+    // Click handler for high scores.
+    this.doHighScoresDialog = function() {
+        $log.log('doHighScoresDialog');
+        var dataSent = {
+            playerCount:    this.playerCount,
+            players:        this.players
+        };
+
+        $mdDialog.show({
+            controller: 'DialogControllerHighScores',
+            controllerAs: 'hsc',
+            templateUrl: 'dialog_template_high_scores.html',
+            parent: angular.element(document.body),
+            openFrom: '#high-scores-button',
+            closeTo: '#high-scores-button',
+            clickOutsideToClose: true,
+            //bindToController: true,
+            locals: {dataSent: dataSent }
+        }).then(function(response){
+            self.displayStatusMessage('High Scores dialog closed.');
+        }, function(){
+            self.displayStatusMessage('High Scores dialog canceled.');
+        });
     };
 
-    // Dialog handler for displaying the winner.
-    this.doWinnerDialog = function() {
-        $log.log('doWinnerDialog');
+    // Dialog handler for displaying the winners.
+    this.doWinnersDialog = function() {
+        $log.log('doWinnersDialog');
+
+        $mdDialog.show({
+            controller: 'DialogControllerWinners',
+            controllerAs: 'wc',
+            templateUrl: 'dialog_template_winners.html',
+            parent: angular.element(document.body),
+            openFrom: '#high-scores-button',
+            closeTo: '#high-scores-button',
+            clickOutsideToClose: true,
+            //bindToController: true,
+            locals: {winners: this.winners}
+        }).then(function(response){
+            self.displayStatusMessage('Ready to start a new game.');
+        }, function(){
+            self.displayStatusMessage('Ready to start a new game.');
+        });
     };
 
     // Start the next player in this round (or special handling for first player in game).
@@ -125,7 +165,7 @@ angular.module('KwantosApp').controller('KwantosController', ['$scope', '$log', 
             // End of round.
             if (this.currentRound === this.numberOfRounds) {
                 // End of last round = game over.
-                this.processWinner();
+                this.processWinners();
                 this.gameOver = true;
             } else {
                 // End of the current round; keep going.
@@ -142,6 +182,7 @@ angular.module('KwantosApp').controller('KwantosController', ['$scope', '$log', 
         // If we didn't finish the game, put up the next question.
         if (!this.gameOver) {
             var player = this.players[this.currentPlayerIndex];
+            player.baseScore = player.score;
             this.displayStatusMessage(player.name + ' is up.');
             this.currentBetAmount = Math.max(Math.floor(player.score / 2), 100);
             this.answerChosen = false;
@@ -189,10 +230,38 @@ angular.module('KwantosApp').controller('KwantosController', ['$scope', '$log', 
     };
 
     // Process the winner and then put up the scores.
-    this.processWinner = function() {
-        console.log('processWinner');
+    this.processWinners = function() {
+        console.log('processWinners');
 
-        this.doWinnerDialog();
+        // Process the players array into a sorted array called winners.
+        this.winners = [];
+        debugger;
+        for (var playerIndex = 0; playerIndex < this.playerCount; playerIndex++) {
+            var player = this.players[playerIndex];
+            var name = player.name;
+            var score = player.score;
+            var playerObj = {name: name, score: score};
+            var inserted = false;
+
+            for (var sortIndex = 0; sortIndex < this.winners.length; sortIndex++) {
+                if (score > this.winners[sortIndex].score) {
+                    this.winners.splice(sortIndex, 0, playerObj);
+                    inserted = true;
+                    break;
+                }
+            }
+            // If we hit the end of the array, append this player object.
+            if (!inserted) {
+                this.winners.push(playerObj);
+            }
+        }
+        debugger;
+
+        // Update the high scores in local storage as necessary.
+        HighScoresService.update(this.winners);
+
+        // The data should now all be available for the winners dialog.
+        this.doWinnersDialog();
     };
 
     // Reset game.

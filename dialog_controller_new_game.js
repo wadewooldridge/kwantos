@@ -7,12 +7,11 @@
  */
 
 /**
- *  Angular dependencies.
- */
-/**
  *  DialogControllerNewGame - modal dialog controller for new game dialog
  */
-angular.module('KwantosApp').controller('DialogControllerNewGame', ['$scope', '$log', '$mdDialog', 'dataSent', function($scope, $log, $mdDialog, dataSent) {
+angular.module('KwantosApp').controller('DialogControllerNewGame',
+    ['$scope', '$log', '$mdDialog', 'dataSent',
+        function($scope, $log, $mdDialog, dataSent) {
     $log.log('DialogControllerNewGame: constructor');
     var self = this;
     this.dataSent = dataSent;

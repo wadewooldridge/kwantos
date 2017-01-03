@@ -176,3 +176,20 @@ main {
     margin-top: 0;
     margin-bottom: 0;
 }
+
+.scores-table {
+    width: 80%;
+    margin-left: 10%;
+}
+
+.scores-table th, .scores-table tr {
+    width: 30%;
+}
+
+.scores-name {
+    text-align: left;
+}
+
+.scores-number {
+    text-align: right;
+}
