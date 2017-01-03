@@ -1,7 +1,7 @@
 /**
  *  Kwantos (how many) game.
  *  An exercise in web API usage with Angular Materials and web APIs.
- *  Copyright (C) 2016 by Wade Wooldridge.
+ *  Copyright (C) 2016-2017 by Wade Wooldridge.
  *
  *  word_pairs.js - The pairs of words that are used in the game play.
  */
