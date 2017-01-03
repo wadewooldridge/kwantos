@@ -35,7 +35,6 @@ angular.module('KwantosApp').service('HighScoresService', ['$http', '$log', func
      */
     this.read = function() {
         $log.log('HighScoresService: read');
-        debugger;
         var retArray = null;
 
         if (!this.isLocalStorageSupported()) {
@@ -53,7 +52,6 @@ angular.module('KwantosApp').service('HighScoresService', ['$http', '$log', func
      */
     this.update = function(players) {
         $log.log('HighScoresService: update');
-        debugger;
 
         if (!this.isLocalStorageSupported()) {
             $log.warn('localStorage not supported - no high scores');

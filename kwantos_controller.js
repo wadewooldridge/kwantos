@@ -27,7 +27,6 @@ angular.module('KwantosApp').controller('KwantosController',
 
     this.startingScore = 5000;                  // Starting score for each player.
     this.numberOfRounds = 10;
-    this.numberOfRounds = 2;        // DEBUG.
     this.gameOver = true;
 
     // Status for the current question in progress.
@@ -235,7 +234,6 @@ angular.module('KwantosApp').controller('KwantosController',
 
         // Process the players array into a sorted array called winners.
         this.winners = [];
-        debugger;
         for (var playerIndex = 0; playerIndex < this.playerCount; playerIndex++) {
             var player = this.players[playerIndex];
             var name = player.name;
@@ -255,7 +253,6 @@ angular.module('KwantosApp').controller('KwantosController',
                 this.winners.push(playerObj);
             }
         }
-        debugger;
 
         // Update the high scores in local storage as necessary.
         HighScoresService.update(this.winners);
