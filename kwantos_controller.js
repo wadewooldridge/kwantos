@@ -1,7 +1,7 @@
 /**
  *  Kwantos (how many) game.
  *  An exercise in web API usage with Angular Materials and web APIs.
- *  Copyright (C) 2016 by Wade Wooldridge.
+ *  Copyright (C) 2016-2017 by Wade Wooldridge.
  *
  *  kwantos_controller.js - Main game processing.
  */
