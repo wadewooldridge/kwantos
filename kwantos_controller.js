@@ -47,7 +47,7 @@ angular.module('KwantosApp').controller('KwantosController',
 
     // Program initialization.
     this.initialize = function() {
-        console.log('initialize');
+        $log.log('initialize');
         this.playerCount = 4;
 
         // Build the default player information.
@@ -72,13 +72,11 @@ angular.module('KwantosApp').controller('KwantosController',
             parent: angular.element(document.body),
             openFrom: '#help-button',
             closeTo: '#help-button',
-            clickOutsideToClose: true,
-            //bindToController: true,
-            locals: {dataSent: null, dataReturned: null }
+            clickOutsideToClose: true
         }).then(function(response){
-            self.displayStatusMessage('Help dialog OK, response: "' + response + '".');
+            //self.displayStatusMessage('Help dialog OK, response: "' + response + '".');
         }, function(){
-            self.displayStatusMessage('Help dialog canceled.');
+            //self.displayStatusMessage('Help dialog canceled.');
         });
     };
 
@@ -101,7 +99,7 @@ angular.module('KwantosApp').controller('KwantosController',
             //bindToController: true,
             locals: {dataSent: dataSent }
         }).then(function(response){
-            self.displayStatusMessage('New Game dialog OK, response: "' + response + '".');
+            self.displayStatusMessage('New Game starting.');
             self.playerCount = response.playerCount;
             self.players = response.players;
             self.resetGame();
@@ -113,10 +111,6 @@ angular.module('KwantosApp').controller('KwantosController',
     // Click handler for high scores.
     this.doHighScoresDialog = function() {
         $log.log('doHighScoresDialog');
-        var dataSent = {
-            playerCount:    this.playerCount,
-            players:        this.players
-        };
 
         $mdDialog.show({
             controller: 'DialogControllerHighScores',
@@ -125,11 +119,9 @@ angular.module('KwantosApp').controller('KwantosController',
             parent: angular.element(document.body),
             openFrom: '#high-scores-button',
             closeTo: '#high-scores-button',
-            clickOutsideToClose: true,
-            //bindToController: true,
-            locals: {dataSent: dataSent }
+            clickOutsideToClose: true
         }).then(function(response){
-            self.displayStatusMessage('High Scores dialog closed.');
+            //self.displayStatusMessage('High Scores dialog closed.');
         }, function(){
             self.displayStatusMessage('High Scores dialog canceled.');
         });
@@ -158,12 +150,13 @@ angular.module('KwantosApp').controller('KwantosController',
 
     // Start the next player in this round (or special handling for first player in game).
     this.nextPlayer = function() {
-        console.log('nextPlayer');
+        $log.log('nextPlayer');
 
         if (this.currentPlayerIndex === (this.playerCount - 1)) {
             // End of round.
             if (this.currentRound === this.numberOfRounds) {
                 // End of last round = game over.
+                this.displayStatusMessage('Game over; displaying winners.');
                 this.processWinners();
                 this.gameOver = true;
             } else {
@@ -188,12 +181,12 @@ angular.module('KwantosApp').controller('KwantosController',
 
             QuestionService.buildRandomQuestion().then(
                 function onSuccess(response) {
-                    console.log('buildRandomQuestion: success');
+                    $log.log('buildRandomQuestion: success');
                     self.question = QuestionService.currentQuestion;
 
                 },
                 function onFailure(response) {
-                    console.log('buildRandomQuestion: failure: ' + response);
+                    $log.log('buildRandomQuestion: failure: ' + response);
                     self.displayStatusMessage('Failed to load question: ' + response);
                     self.gameOver = true;
                 }
@@ -230,7 +223,7 @@ angular.module('KwantosApp').controller('KwantosController',
 
     // Process the winner and then put up the scores.
     this.processWinners = function() {
-        console.log('processWinners');
+        $log.log('processWinners');
 
         // Process the players array into a sorted array called winners.
         this.winners = [];
@@ -263,7 +256,7 @@ angular.module('KwantosApp').controller('KwantosController',
 
     // Reset game.
     this.resetGame = function() {
-        console.log('resetGame');
+        $log.log('resetGame');
 
         // Set the player scores back to the default.
         for (var p = 0; p < this.playerCount; p++) {
@@ -289,8 +282,7 @@ angular.module('KwantosApp').controller('KwantosController',
         }
     };
 
-    // This code runs to start up the app, and put up the New Game dialog.
+    // This code runs to start up the app, and puts up the New Game dialog.
     this.initialize();
     this.doNewGameDialog();
 }]);
-
