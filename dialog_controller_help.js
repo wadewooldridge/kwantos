@@ -7,9 +7,6 @@
  */
 
 /**
- *  Angular dependencies.
- */
-/**
  *  DialogControllerHelp - modal dialog controller for help dialog.
  */
 angular.module('KwantosApp').controller('DialogControllerHelp', ['$scope', '$log', '$mdDialog', 'dataSent', 'dataReturned', function($scope, $log, $mdDialog, dataSent, dataReturned) {

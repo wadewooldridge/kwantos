@@ -1,20 +1,27 @@
-<md-dialog aria-label="Help Dialog" class="game-dialog neutral-background-color">
+<md-dialog aria-label="Winners Dialog" class="game-dialog neutral-background-color">
     <md-dialog-content>
-        <h3>Kwantos Help</h3>
-        <p>Welcome to Kwantos, the "Are there more?" game.</p>
-        <p>The game can be configured for 1 to 4 players, and a game lasts ten rounds. The player with the most
-            points at the end of the tenth round is declared the winner.</p>
-        <p>Each player in each round will be asked a question form: "Are there more <i>items in location</i> that
-            contain the word <i>"word1"</i> or the word <i>"word2"</i>?" For example, Kwantos may ask, "Are there
-            more books in the Library of Congress with the word "blue" or the word "red"?"</p>
-        <p>The player then selects how much of his current score to bet (based on how confident the player is
-            in their answer), and selects one of the two words.  Kwantos will check the web and find out the
-            right answer, and the player will either be awarded or penalized the amount of their bet.</p>
+        <h3>Winners</h3>
+            <table class="scores-table">
+                <tr ng-repeat="s in wc.winners">
+                    <th class="scores-name">{{wc.cardinals[$index]}}</th>
+                    <td class="scores-name">{{s.name}}</td>
+                    <td class="scores-number">{{s.score}}</td>
+                </tr>
+            </table>
+        <md-divider></md-divider>
+        <h3>High Scores</h3>
+        <table class="scores-table">
+            <tr ng-repeat="s in wc.highScores">
+                <th class="scores-name">{{wc.cardinals[$index]}}</th>
+                <td class="scores-name">{{s.name}}</td>
+                <td class="scores-number">{{s.score}}</td>
+            </tr>
+        </table>
     </md-dialog-content>
     <md-divider></md-divider>
     <md-dialog-actions>
-        <md-button class="md-icon-button" ng-click="dc.confirm()" aria-label="OK" title="OK"
-                   id="confirm-help-button">
+        <md-button class="md-icon-button" ng-click="wc.confirm()" aria-label="OK" title="OK"
+                   id="confirm-winners-button">
             <i class="material-icons">done</i>
         </md-button>
     </md-dialog-actions>
