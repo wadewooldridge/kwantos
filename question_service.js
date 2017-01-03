@@ -114,11 +114,9 @@ angular.module('KwantosApp').service('QuestionService', ['$http', '$log', '$q', 
             method:     'jsonp'
         }).success(function(response) {
             $log.log('getCountsForITunes: success');
-            debugger;
             defer.resolve(response);
         }).error(function() {
             $log.log('getCountsForITunes: failure');
-            debugger;
             defer.reject('HTTP request failed.');
         });
 
@@ -131,7 +129,7 @@ angular.module('KwantosApp').service('QuestionService', ['$http', '$log', '$q', 
      *  @returns                Array of two counts to go with the words.
      */
     this.getCountsForLibraryOfCongress = function(wordPair) {
-        console.log('getCountsForLibraryOfCongress: ' + wordPair);
+        $log.log('getCountsForLibraryOfCongress: ' + wordPair);
         return [123, 456];
     };
 

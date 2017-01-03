@@ -18,12 +18,12 @@ angular.module('KwantosApp').controller('DialogControllerWinners',
     this.cardinals = ['1st', '2nd', '3rd', '4th', '5th', '6th', '7th', '8th', '9th', '10th'];
 
     this.cancel = function() {
-        console.log('DialogControllerWinners: cancel');
+        $log.log('DialogControllerWinners: cancel');
         $mdDialog.cancel();
     };
 
     this.confirm = function() {
-        console.log('DialogControllerWinners: confirm');
+        $log.log('DialogControllerWinners: confirm');
         $mdDialog.hide();
     };
 
