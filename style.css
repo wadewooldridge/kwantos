@@ -193,3 +193,9 @@ main {
 .scores-number {
     text-align: right;
 }
+
+.trophy-img {
+    width: 50%;
+    height: auto;
+    max-width: 250px;
+}
