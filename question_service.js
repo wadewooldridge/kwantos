@@ -111,7 +111,7 @@ angular.module('KwantosApp').service('QuestionService', ['$http', '$log', '$q', 
      */
     this.getCountsForGeoNames = function(wordObject) {
         //$log.log('getCountsForGeoNames: "' + wordObject.word + '"');
-        var urlBase = 'http://api.geonames.org/searchJSON?name=';
+        var urlBase = 'https://api.geonames.org/searchJSON?name=';
         var urlEnd = '&username=kwantos&maxRows=1&callback=JSON_CALLBACK';
         var url = urlBase + wordObject.word + urlEnd;
         //$log.log('url: ' + url);
