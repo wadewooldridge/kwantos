@@ -177,13 +177,12 @@ angular.module('KwantosApp').controller('KwantosController',
             player.baseScore = player.score;
             this.displayStatusMessage(player.name + ' is up.');
             this.currentBetAmount = Math.max(Math.floor(player.score / 2), 100);
-            this.answerChosen = false;
 
             QuestionService.buildRandomQuestion().then(
                 function onSuccess(response) {
                     $log.log('buildRandomQuestion: success');
                     self.question = QuestionService.currentQuestion;
-
+                    self.answerChosen = false;
                 },
                 function onFailure(response) {
                     $log.log('buildRandomQuestion: failure: ' + response);
