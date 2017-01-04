@@ -13,7 +13,7 @@ angular.module('KwantosApp').controller('KwantosController',
     ['$scope', '$log', '$mdDialog', 'QuestionService', 'HighScoresService',
         function($scope, $log, $mdDialog, QuestionService, HighScoresService) {
     var self = this;
-    $log.log('KwantosController: constructor');
+    //$log.log('KwantosController: constructor');
 
     // Game parameters.
     this.playerCount = null;                    // Current player count.
@@ -47,7 +47,7 @@ angular.module('KwantosApp').controller('KwantosController',
 
     // Program initialization.
     this.initialize = function() {
-        $log.log('initialize');
+        //$log.log('initialize');
         this.playerCount = 4;
 
         // Build the default player information.
@@ -64,7 +64,7 @@ angular.module('KwantosApp').controller('KwantosController',
 
     // Click handler for help.
     this.doHelpDialog = function() {
-        $log.log('doHelpDialog');
+        //$log.log('doHelpDialog');
         $mdDialog.show({
             controller: 'DialogControllerHelp',
             controllerAs: 'dc',
@@ -82,7 +82,7 @@ angular.module('KwantosApp').controller('KwantosController',
 
     // Click handler for new game.
     this.doNewGameDialog = function() {
-        $log.log('doNewGameDialog');
+        //$log.log('doNewGameDialog');
         var dataSent = {
             playerCount:    this.playerCount,
             players:        this.players
@@ -110,7 +110,7 @@ angular.module('KwantosApp').controller('KwantosController',
 
     // Click handler for high scores.
     this.doHighScoresDialog = function() {
-        $log.log('doHighScoresDialog');
+        //$log.log('doHighScoresDialog');
 
         $mdDialog.show({
             controller: 'DialogControllerHighScores',
@@ -129,7 +129,7 @@ angular.module('KwantosApp').controller('KwantosController',
 
     // Dialog handler for displaying the winners.
     this.doWinnersDialog = function() {
-        $log.log('doWinnersDialog');
+        //$log.log('doWinnersDialog');
 
         $mdDialog.show({
             controller: 'DialogControllerWinners',
@@ -150,7 +150,7 @@ angular.module('KwantosApp').controller('KwantosController',
 
     // Start the next player in this round (or special handling for first player in game).
     this.nextPlayer = function() {
-        $log.log('nextPlayer');
+        //$log.log('nextPlayer');
 
         if (this.currentPlayerIndex === (this.playerCount - 1)) {
             // End of round.
@@ -180,12 +180,12 @@ angular.module('KwantosApp').controller('KwantosController',
 
             QuestionService.buildRandomQuestion().then(
                 function onSuccess(response) {
-                    $log.log('buildRandomQuestion: success');
+                    //$log.log('buildRandomQuestion: success');
                     self.question = QuestionService.currentQuestion;
                     self.answerChosen = false;
                 },
                 function onFailure(response) {
-                    $log.log('buildRandomQuestion: failure: ' + response);
+                    //$log.log('buildRandomQuestion: failure: ' + response);
                     self.displayStatusMessage('Failed to load question: ' + response);
                     self.gameOver = true;
                 }
@@ -195,7 +195,7 @@ angular.module('KwantosApp').controller('KwantosController',
 
     // Handle the user clicking on either answer.
     this.answerClicked = function(leftAnswerChosen) {
-        $log.log('answerClicked: ' + (leftAnswerChosen ? 'left' : 'right'));
+        //$log.log('answerClicked: ' + (leftAnswerChosen ? 'left' : 'right'));
         self.answerChosen = true;
         var leftAnswerIsCorrect = (self.question.answers[0].count > self.question.answers[1].count);
         var correctAnswerChosen = (leftAnswerChosen === leftAnswerIsCorrect);
@@ -216,13 +216,13 @@ angular.module('KwantosApp').controller('KwantosController',
 
     // Handle the dismiss button for the current question.
     this.confirmQuestion = function() {
-        $log.log('confirmQuestion');
+        //$log.log('confirmQuestion');
         this.nextPlayer();
     };
 
     // Process the winner and then put up the scores.
     this.processWinners = function() {
-        $log.log('processWinners');
+        //$log.log('processWinners');
 
         // Process the players array into a sorted array called winners.
         this.winners = [];
@@ -255,7 +255,7 @@ angular.module('KwantosApp').controller('KwantosController',
 
     // Reset game.
     this.resetGame = function() {
-        $log.log('resetGame');
+        //$log.log('resetGame');
 
         // Set the player scores back to the default.
         for (var p = 0; p < this.playerCount; p++) {
@@ -273,7 +273,7 @@ angular.module('KwantosApp').controller('KwantosController',
 
     // Update score based on data returned from question dialog.
     this.updateScore = function(correct) {
-        $log.log('updateScore: ' + correct);
+        //$log.log('updateScore: ' + correct);
         if (correct) {
             this.currentPlayer.score += this.currentBetAmount;
         } else {

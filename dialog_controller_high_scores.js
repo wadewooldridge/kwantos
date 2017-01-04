@@ -12,17 +12,17 @@
 angular.module('KwantosApp').controller('DialogControllerHighScores',
     ['$scope', '$log', '$mdDialog', 'HighScoresService',
         function($scope, $log, $mdDialog, HighScoresService) {
-    $log.log('DialogControllerHighScores: constructor');
+    //$log.log('DialogControllerHighScores: constructor');
     this.highScores = HighScoresService.read();
     this.cardinals = ['1st', '2nd', '3rd', '4th', '5th', '6th', '7th', '8th', '9th', '10th'];
 
     this.cancel = function() {
-        $log.log('DialogControllerHighScores: cancel');
+        //$log.log('DialogControllerHighScores: cancel');
         $mdDialog.cancel();
     };
 
     this.confirm = function() {
-        $log.log('DialogControllerHighScores: confirm');
+        //$log.log('DialogControllerHighScores: confirm');
         $mdDialog.hide();
     };
 

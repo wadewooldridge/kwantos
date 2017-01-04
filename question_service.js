@@ -7,7 +7,7 @@
  */
 
 angular.module('KwantosApp').service('QuestionService', ['$http', '$log', '$q', function($http, $log, $q) {
-    $log.log('QuestionService: factory');
+    //$log.log('QuestionService: factory');
 
     /**
      *  currentQuestion - object to hold all the parts of the current question and answers.
@@ -26,7 +26,7 @@ angular.module('KwantosApp').service('QuestionService', ['$http', '$log', '$q', 
      *  resetCurrentQuestion - reset fields in currentQuestion object in preparation for the next question.
      */
     this.resetCurrentQuestion = function() {
-        $log.log('resetCurrentQuestion');
+        //$log.log('resetCurrentQuestion');
         this.currentQuestion.countFunction = null;
         this.currentQuestion.itemsName = 'TBD';
         for (var i = 0; i < 2; i++) {
@@ -40,14 +40,13 @@ angular.module('KwantosApp').service('QuestionService', ['$http', '$log', '$q', 
      *  @returns {object} - Promise.
      */
     this.buildRandomQuestion = function() {
-        $log.log('buildRandomQuestion');
+        //$log.log('buildRandomQuestion');
         this.resetCurrentQuestion();
         var words = getRandomWordPair();
         this.currentQuestion.answers[0].word = words[0];
         this.currentQuestion.answers[1].word = words[1];
 
-        $log.log('buildRandomQuestion: words: ' + this.currentQuestion.answers[0].word + ', ' +
-                                                  this.currentQuestion.answers[1].word);
+        //$log.log('buildRandomQuestion: words: ' + this.currentQuestion.answers[0].word + ', ' + this.currentQuestion.answers[1].word);
 
         // Select a random API from the array of APIs, and save its parameters.
         var api = this.apis[Math.floor(Math.random() * this.apis.length)];
@@ -62,11 +61,11 @@ angular.module('KwantosApp').service('QuestionService', ['$http', '$log', '$q', 
             this.currentCountFunction(this.currentQuestion.answers[1])
         ])
             .then(function onSuccess(results) {
-                $log.log('Get count success: ' + results);
+                //$log.log('Get count success: ' + results);
                 defer.resolve();
             },
             function onFailure(response) {
-                $log.log('Get count failure: ' + response);
+                //$log.log('Get count failure: ' + response);
                 defer.reject('HTTP request failed.');
             }
         );
@@ -80,12 +79,12 @@ angular.module('KwantosApp').service('QuestionService', ['$http', '$log', '$q', 
      *  @returns {object}           Promise for the web search.
      */
     this.getCountsForFlickr = function(wordObject) {
-        $log.log('getCountsForFlickr: "' + wordObject.word + '"');
+        //$log.log('getCountsForFlickr: "' + wordObject.word + '"');
         var urlBase = 'https://api.flickr.com/services/rest?method=flickr.photos.search';
         var urlMiddle = '&api_key=' + 'ae2be88898748811d752637d4c7235c5' + '&text=';
         var urlEnd = '&media=photos&format=json&nojsoncallback=1';
         var url = urlBase + urlMiddle + wordObject.word + urlEnd;
-        $log.log('url: ' + url);
+        //$log.log('url: ' + url);
 
         var defer = $q.defer();
 
@@ -94,11 +93,11 @@ angular.module('KwantosApp').service('QuestionService', ['$http', '$log', '$q', 
             method:     'get'
         }).success(function(response) {
             var count = parseInt(response.photos.total);
-            $log.log('getCountsForFlickr: success, count=' + count);
+            //$log.log('getCountsForFlickr: success, count=' + count);
             wordObject.count = count;
             defer.resolve(count);
         }).error(function(response) {
-            $log.log('getCountsForFlickr: failure: ' + response);
+            //$log.log('getCountsForFlickr: failure: ' + response);
             defer.reject('HTTP request failed.');
         });
 
@@ -111,11 +110,11 @@ angular.module('KwantosApp').service('QuestionService', ['$http', '$log', '$q', 
      *  @returns {object}           Promise for the web search.
      */
     this.getCountsForGeoNames = function(wordObject) {
-        $log.log('getCountsForGeoNames: "' + wordObject.word + '"');
+        //$log.log('getCountsForGeoNames: "' + wordObject.word + '"');
         var urlBase = 'http://api.geonames.org/searchJSON?name=';
         var urlEnd = '&username=kwantos&maxRows=1&callback=JSON_CALLBACK';
         var url = urlBase + wordObject.word + urlEnd;
-        $log.log('url: ' + url);
+        //$log.log('url: ' + url);
 
         var defer = $q.defer();
 
@@ -124,11 +123,11 @@ angular.module('KwantosApp').service('QuestionService', ['$http', '$log', '$q', 
             method:     'jsonp'
         }).success(function(response) {
             var count = response.totalResultsCount;
-            $log.log('getCountsForGeoNames: success, count=' + count);
+            //$log.log('getCountsForGeoNames: success, count=' + count);
             wordObject.count = count;
             defer.resolve(count);
         }).error(function(response) {
-            $log.log('getCountsForGeoNames: failure: ' + response);
+            //$log.log('getCountsForGeoNames: failure: ' + response);
             defer.reject('HTTP request failed.');
         });
 
@@ -141,10 +140,10 @@ angular.module('KwantosApp').service('QuestionService', ['$http', '$log', '$q', 
      *  @returns {object}           Promise for the web search.
      */
     this.getCountsForGoogleBooks = function(wordObject) {
-        $log.log('getCountsForGoogleBooks: "' + wordObject.word + '"');
+        //$log.log('getCountsForGoogleBooks: "' + wordObject.word + '"');
         var urlBase = 'https://www.googleapis.com/books/v1/volumes?q=';
         var url = urlBase + wordObject.word;
-        $log.log('url: ' + url);
+        //$log.log('url: ' + url);
 
         var defer = $q.defer();
 
@@ -153,11 +152,11 @@ angular.module('KwantosApp').service('QuestionService', ['$http', '$log', '$q', 
             method:     'get'
         }).success(function(response) {
             var count = response.totalItems;
-            $log.log('getCountsForGoogleBooks: success, count=' + count);
+            //$log.log('getCountsForGoogleBooks: success, count=' + count);
             wordObject.count = count;
             defer.resolve(count);
         }).error(function(response) {
-            $log.log('getCountsForGoogleBooks: failure: ' + response);
+            //$log.log('getCountsForGoogleBooks: failure: ' + response);
             defer.reject('HTTP request failed.');
         });
 
@@ -175,11 +174,11 @@ angular.module('KwantosApp').service('QuestionService', ['$http', '$log', '$q', 
         var oneDayAgo = new Date();
         oneDayAgo.setDate(oneDayAgo.getDate() - 1);
         var dateString = oneDayAgo.toISOString();
-        $log.log('getCountsForYouTube: "' + wordObject.word + '"');
+        //$log.log('getCountsForYouTube: "' + wordObject.word + '"');
         var urlBase = 'https://www.googleapis.com/youtube/v3/search?key=AIzaSyDWyFJriCis4foVHHv1kxnn73aGpp4taQ4';
         var urlEnd = '&part=snippet&type=video&regionCode=US&publishedAfter=' + dateString;
         var url = urlBase + urlEnd + '&q=' + wordObject.word;
-        $log.log('url: ' + url);
+        //$log.log('url: ' + url);
 
         var defer = $q.defer();
 
@@ -188,11 +187,11 @@ angular.module('KwantosApp').service('QuestionService', ['$http', '$log', '$q', 
             method:     'get'
         }).success(function(response) {
             var count = response.pageInfo.totalResults;
-            $log.log('getCountsForYouTube: success, count=' + count);
+            //$log.log('getCountsForYouTube: success, count=' + count);
             wordObject.count = count;
             defer.resolve(count);
         }).error(function(response) {
-            $log.log('getCountsForYouTube: failure: ' + response);
+            //$log.log('getCountsForYouTube: failure: ' + response);
             defer.reject('HTTP request failed.');
         });
 

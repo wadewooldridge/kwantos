@@ -7,7 +7,7 @@
  */
 
 angular.module('KwantosApp').service('HighScoresService', ['$http', '$log', function($http, $log) {
-    $log.log('HighScoresService: factory');
+    //$log.log('HighScoresService: factory');
 
     /**
      *  LOCAL_STORAGE_KEY - Identifier to look up in local storage.
@@ -34,11 +34,11 @@ angular.module('KwantosApp').service('HighScoresService', ['$http', '$log', func
      *  @returns {object[]}
      */
     this.read = function() {
-        $log.log('HighScoresService: read');
+        //$log.log('HighScoresService: read');
         var retArray = null;
 
         if (!this.isLocalStorageSupported()) {
-            $log.warn('localStorage not supported - no high scores');
+            //$log.warn('localStorage not supported - no high scores');
         } else {
             retArray = JSON.parse(localStorage.getItem(this.LOCAL_STORAGE_KEY));
         }
@@ -51,10 +51,10 @@ angular.module('KwantosApp').service('HighScoresService', ['$http', '$log', func
      *  @param {object[]} players - Array of player objects.
      */
     this.update = function(players) {
-        $log.log('HighScoresService: update');
+        //$log.log('HighScoresService: update');
 
         if (!this.isLocalStorageSupported()) {
-            $log.warn('localStorage not supported - no high scores');
+            //$log.warn('localStorage not supported - no high scores');
         } else {
             var highScores = JSON.parse(localStorage.getItem(this.LOCAL_STORAGE_KEY));
             // If local storage was empty, it returns null; set it as an empty array instead.

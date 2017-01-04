@@ -12,18 +12,18 @@
 angular.module('KwantosApp').controller('DialogControllerNewGame',
     ['$scope', '$log', '$mdDialog', 'dataSent',
         function($scope, $log, $mdDialog, dataSent) {
-    $log.log('DialogControllerNewGame: constructor');
+    //$log.log('DialogControllerNewGame: constructor');
     var self = this;
     this.dataSent = dataSent;
     this.dataReturned = angular.copy(dataSent);
 
     this.cancel = function() {
-        $log.log('DialogControllerNewGame: cancel');
+        //$log.log('DialogControllerNewGame: cancel');
         $mdDialog.cancel();
     };
 
     this.confirm = function() {
-        $log.log('DialogControllerNewGame: confirm');
+        //$log.log('DialogControllerNewGame: confirm');
         $mdDialog.hide(this.dataReturned);
     };
 
