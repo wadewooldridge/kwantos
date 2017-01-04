@@ -49,23 +49,60 @@ angular.module('KwantosApp').service('QuestionService', ['$http', '$log', '$q', 
         $log.log('buildRandomQuestion: words: ' + this.currentQuestion.answers[0].word + ', ' +
                                                   this.currentQuestion.answers[1].word);
 
-        // TODO: Randomly select the type of lookup.
-        this.currentCountFunction = this.getCountsForGeoNames;
-        this.currentQuestion.itemsName = 'place names in the world';
+        // Select a random API from the array of APIs, and save its parameters.
+        var api = this.apis[Math.floor(Math.random() * this.apis.length)];
+        this.currentCountFunction = api.countFunction;
+        this.currentQuestion.itemsName = api.itemsName;
 
         // Get the count for both words.
-        return $q.all([
+        var defer =  $q.defer();
+
+        $q.all([
             this.currentCountFunction(this.currentQuestion.answers[0]),
             this.currentCountFunction(this.currentQuestion.answers[1])
         ])
             .then(function onSuccess(results) {
                 $log.log('Get count success: ' + results);
+                defer.resolve();
             },
             function onFailure(response) {
                 $log.log('Get count failure: ' + response);
+                defer.reject('HTTP request failed.');
             }
         );
 
+        return defer.promise;
+    };
+
+    /**
+     *  getCountsForFlickr - Make API calls for Flickr.
+     *  @param wordObject {object}  Word object to look up.
+     *  @returns {object}           Promise for the web search.
+     */
+    this.getCountsForFlickr = function(wordObject) {
+        $log.log('getCountsForFlickr: "' + wordObject.word + '"');
+        var urlBase = 'https://api.flickr.com/services/rest?method=flickr.photos.search';
+        var urlMiddle = '&api_key=' + 'ae2be88898748811d752637d4c7235c5' + '&text=';
+        var urlEnd = '&media=photos&format=json&nojsoncallback=1';
+        var url = urlBase + urlMiddle + wordObject.word + urlEnd;
+        $log.log('url: ' + url);
+
+        var defer = $q.defer();
+
+        $http({
+            url:        url,
+            method:     'get'
+        }).success(function(response) {
+            var count = parseInt(response.photos.total);
+            $log.log('getCountsForFlickr: success, count=' + count);
+            wordObject.count = count;
+            defer.resolve(count);
+        }).error(function(response) {
+            $log.log('getCountsForFlickr: failure: ' + response);
+            defer.reject('HTTP request failed.');
+        });
+
+        return defer.promise;
     };
 
     /**
@@ -99,24 +136,28 @@ angular.module('KwantosApp').service('QuestionService', ['$http', '$log', '$q', 
     };
 
     /**
-     *  getCountsForITunes - Make API calls for iTunes.
-     *  @param      word        Word to look up.
-     *  @returns                Count for this word.
+     *  getCountsForGoogleBooks - Make API calls for GoogleBooks.
+     *  @param wordObject {object}  Word object to look up.
+     *  @returns {object}           Promise for the web search.
      */
-    this.getCountsForITunes = function(word) {
-        $log.log('getCountsForITunes: "' + word + '"');
-        var urlBase = 'https://itunes.apple.com/search?term=';
-        var urlEnd = '&callback=JSON_CALLBACK';
+    this.getCountsForGoogleBooks = function(wordObject) {
+        $log.log('getCountsForGoogleBooks: "' + wordObject.word + '"');
+        var urlBase = 'https://www.googleapis.com/books/v1/volumes?q=';
+        var url = urlBase + wordObject.word;
+        $log.log('url: ' + url);
+
         var defer = $q.defer();
 
         $http({
-            url:        urlBase + word + urlEnd,
-            method:     'jsonp'
+            url:        url,
+            method:     'get'
         }).success(function(response) {
-            $log.log('getCountsForITunes: success');
-            defer.resolve(response);
-        }).error(function() {
-            $log.log('getCountsForITunes: failure');
+            var count = response.totalItems;
+            $log.log('getCountsForGoogleBooks: success, count=' + count);
+            wordObject.count = count;
+            defer.resolve(count);
+        }).error(function(response) {
+            $log.log('getCountsForGoogleBooks: failure: ' + response);
             defer.reject('HTTP request failed.');
         });
 
@@ -124,14 +165,60 @@ angular.module('KwantosApp').service('QuestionService', ['$http', '$log', '$q', 
     };
 
     /**
-     *  getCountsForLibraryOfCongress - Make API calls for the Library of Congress.
-     *  @param      wordPair    Array of two words to look up.
-     *  @returns                Array of two counts to go with the words.
+     *  getCountsForYouTube - Make API calls for YouTube.
+     *                        Note that we have to limit to US videos in the last 24 hours,
+     *                        to keep from having every result cap out at 1,000,000.
+     *  @param wordObject {object}  Word object to look up.
+     *  @returns {object}           Promise for the web search.
      */
-    this.getCountsForLibraryOfCongress = function(wordPair) {
-        $log.log('getCountsForLibraryOfCongress: ' + wordPair);
-        return [123, 456];
+    this.getCountsForYouTube = function(wordObject) {
+        var oneDayAgo = new Date();
+        oneDayAgo.setDate(oneDayAgo.getDate() - 1);
+        var dateString = oneDayAgo.toISOString();
+        $log.log('getCountsForYouTube: "' + wordObject.word + '"');
+        var urlBase = 'https://www.googleapis.com/youtube/v3/search?key=AIzaSyDWyFJriCis4foVHHv1kxnn73aGpp4taQ4';
+        var urlEnd = '&part=snippet&type=video&regionCode=US&publishedAfter=' + dateString;
+        var url = urlBase + urlEnd + '&q=' + wordObject.word;
+        $log.log('url: ' + url);
+
+        var defer = $q.defer();
+
+        $http({
+            url:        url,
+            method:     'get'
+        }).success(function(response) {
+            var count = response.pageInfo.totalResults;
+            $log.log('getCountsForYouTube: success, count=' + count);
+            wordObject.count = count;
+            defer.resolve(count);
+        }).error(function(response) {
+            $log.log('getCountsForYouTube: failure: ' + response);
+            defer.reject('HTTP request failed.');
+        });
+
+        return defer.promise;
     };
+
+    // Build the list of APIs (has to occur after their definitions.
+    this.apis = [
+        {
+            countFunction: this.getCountsForFlickr,
+            itemsName: 'Flickr photo tags'
+        },
+        {
+            countFunction: this.getCountsForGeoNames,
+            itemsName: 'GeoNames place names'
+        },
+        {
+            countFunction: this.getCountsForGoogleBooks,
+            itemsName: 'Google Books API volumes'
+        },
+        {
+            countFunction: this.getCountsForYouTube,
+            itemsName: 'US YouTube videos in the last 24 hours'
+        }
+    ];
+
 
 }]);
 
