@@ -12,16 +12,16 @@
 angular.module('KwantosApp').controller('DialogControllerHelp',
     ['$scope', '$log', '$mdDialog',
         function($scope, $log, $mdDialog) {
-    $log.log('DialogControllerHelp: constructor');
+    //$log.log('DialogControllerHelp: constructor');
     var self = this;
 
     this.cancel = function() {
-        $log.log('DialogControllerHelp: cancel');
+        //$log.log('DialogControllerHelp: cancel');
         $mdDialog.cancel();
     };
 
     this.confirm = function() {
-        $log.log('DialogControllerHelp: confirm');
+        //$log.log('DialogControllerHelp: confirm');
         $mdDialog.hide();
     };
 
