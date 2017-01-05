@@ -177,6 +177,7 @@ angular.module('KwantosApp').controller('KwantosController',
             player.baseScore = player.score;
             this.displayStatusMessage(player.name + ' is up.');
             this.currentBetAmount = Math.max(Math.floor(player.score / 2), 100);
+            self.answerChosen = false;
 
             QuestionService.buildRandomQuestion().then(
                 function onSuccess(response) {

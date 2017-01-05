@@ -43,8 +43,14 @@ angular.module('KwantosApp').service('QuestionService', ['$http', '$log', '$q', 
         //$log.log('buildRandomQuestion');
         this.resetCurrentQuestion();
         var words = getRandomWordPair();
-        this.currentQuestion.answers[0].word = words[0];
-        this.currentQuestion.answers[1].word = words[1];
+        // Randomize which word comes first when presented.
+        if (Math.random() > 0.5) {
+            this.currentQuestion.answers[0].word = words[0];
+            this.currentQuestion.answers[1].word = words[1];
+        } else {
+            this.currentQuestion.answers[0].word = words[1];
+            this.currentQuestion.answers[1].word = words[0];
+        }
 
         //$log.log('buildRandomQuestion: words: ' + this.currentQuestion.answers[0].word + ', ' + this.currentQuestion.answers[1].word);
 
@@ -111,7 +117,7 @@ angular.module('KwantosApp').service('QuestionService', ['$http', '$log', '$q', 
      */
     this.getCountsForGeoNames = function(wordObject) {
         //$log.log('getCountsForGeoNames: "' + wordObject.word + '"');
-        var urlBase = 'https://api.geonames.org/searchJSON?name=';
+        var urlBase = 'http://api.geonames.org/searchJSON?name=';
         var urlEnd = '&username=kwantos&maxRows=1&callback=JSON_CALLBACK';
         var url = urlBase + wordObject.word + urlEnd;
         //$log.log('url: ' + url);
